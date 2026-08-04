@@ -2,7 +2,7 @@
 BYOK API Routes - Bring Your Own Key API endpoints
 """
 
-from fastapi import APIRouter, HTTPException, Depends, Query
+from fastapi import APIRouter, HTTPException, Depends, Query, Body
 from pydantic import BaseModel, Field
 from typing import List, Optional
 from datetime import datetime
@@ -117,10 +117,6 @@ async def list_keys(
 ):
     """
     Key'leri listele (sadece metadata, key value yok)
-    
-    - **service**: Servis filtresi
-    - **scope**: Kapsam filtresi
-    - **status**: Durum filtresi (active, rotating, revoked, expired)
     """
     try:
         vault = get_keyvault()
@@ -188,7 +184,7 @@ async def get_key(key_id: str):
 
 
 @router.post("/keys/{key_id}/rotate")
-async def rotate_key(key_id: str, new_api_key: str = Field(..., description="Yeni API key")):
+async def rotate_key(key_id: str, request: dict = Body(...)):
     """
     Key rotasyonu
     
@@ -200,6 +196,10 @@ async def rotate_key(key_id: str, new_api_key: str = Field(..., description="Yen
         
         if key_id not in vault.keys:
             raise HTTPException(status_code=404, detail="Key not found")
+        
+        new_api_key = request.get("new_api_key")
+        if not new_api_key:
+            raise HTTPException(status_code=400, detail="new_api_key is required")
         
         success = await vault.rotate_key(key_id, new_api_key)
         
@@ -245,7 +245,6 @@ async def get_key_audit(key_id: str, limit: int = Query(100, ge=1, le=1000)):
     """
     try:
         vault = get_keyvault()
-        
         logs = await vault.get_audit_logs(key_id=key_id, limit=limit)
         
         return {"key_id": key_id, "logs": logs, "total": len(logs)}

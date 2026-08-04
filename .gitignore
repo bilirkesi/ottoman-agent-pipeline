@@ -50,9 +50,9 @@ logs/
 # Data
 data/
 !data/.gitkeep
-models/
-!models/.gitkeep
-!models/prompts/
+/models/
+!/models/.gitkeep
+!/models/prompts/
 
 # Tests
 .coverage
@@ -68,6 +68,9 @@ htmlcov/
 desktop/node_modules/
 desktop/dist/
 desktop/build/
+
+# Node (root)
+node_modules/
 
 # Mobile
 mobile/node_modules/

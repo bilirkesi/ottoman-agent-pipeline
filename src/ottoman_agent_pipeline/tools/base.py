@@ -1,22 +1,18 @@
-"""
-Base Tool - Abstract class for all agent tools
-"""
-
+""" Base Tool - Abstract class for all agent tools """
 import asyncio
 import json
 import logging
 from abc import ABC, abstractmethod
-from typing import Any, AsyncGenerator, Dict, Optional
+from typing import Any, AsyncGenerator, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
-
 
 class BaseTool(ABC):
     """
     Abstract base class for all agent tools.
     
-    Tools are MCP-compatible functions that the agent can call
-    to perform actions like file operations, web searches, etc.
+    Tools are MCP-compatible functions that the agent can call to perform
+    actions like file operations, web searches, etc.
     """
     
     name: str = "base_tool"

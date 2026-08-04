@@ -49,7 +49,7 @@ class AgentTeam:
     def _initialize_agents(self):
         """Agent'ları başlat"""
         # Import agents
-        from .agents.team import (
+        from .team import (
             CodeAgent,
             TestAgent,
             DeployAgent,

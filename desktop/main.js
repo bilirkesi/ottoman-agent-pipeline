@@ -31,10 +31,10 @@ function createWindow() {
 
   // Load the app
   if (isDev) {
-    mainWindow.loadURL('http://localhost:3000');
+    // mainWindow.loadURL('http://localhost:3000');  // Dev mode disabled
     mainWindow.webContents.openDevTools();
   } else {
-    mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
+    mainWindow.loadFile(path.join(__dirname, 'renderer', 'index.html'));
   }
 
   // Create menu

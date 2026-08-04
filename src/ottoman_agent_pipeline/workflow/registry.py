@@ -217,3 +217,58 @@ class WorkflowRegistry:
                 await f.write(json.dumps(data, indent=2))
         except Exception as e:
             logger.error(f"Error saving workflows: {e}")
+
+
+# Module-level singleton
+_registry = None
+
+def get_workflow_registry() -> WorkflowRegistry:
+    """Global registry instance"""
+    global _registry
+    if _registry is None:
+        _registry = WorkflowRegistry()
+    return _registry
+
+
+class WorkflowTemplate:
+    """Workflow şablonları"""
+    
+    TEMPLATES = {
+        "transliteration_pipeline": {
+            "name": "Transliteration Pipeline",
+            "description": "Ottoman Turkish to Modern Turkish",
+            "nodes": [
+                WorkflowNode(node_id="start", type="start", name="Start"),
+                WorkflowNode(node_id="transliterate", type="tool", name="Transliterate", config={"tool": "translation"}),
+                WorkflowNode(node_id="output", type="end", name="Output")
+            ],
+            "edges": [
+                WorkflowEdge(edge_id="e1", source_node_id="start", target_node_id="transliterate"),
+                WorkflowEdge(edge_id="e2", source_node_id="transliterate", target_node_id="output")
+            ]
+        }
+    }
+    
+    @classmethod
+    def get_templates(cls) -> List[Dict]:
+        return [
+            {
+                "id": template_id,
+                "name": template["name"],
+                "description": template["description"]
+            }
+            for template_id, template in cls.TEMPLATES.items()
+        ]
+    
+    @classmethod
+    def get_template(cls, template_id: str) -> Optional[Workflow]:
+        template = cls.TEMPLATES.get(template_id)
+        if not template:
+            return None
+        return Workflow(
+            workflow_id=f"template_{template_id}",
+            name=template["name"],
+            description=template["description"],
+            nodes=template["nodes"],
+            edges=template["edges"]
+        )

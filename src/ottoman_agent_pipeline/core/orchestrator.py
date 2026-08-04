@@ -13,9 +13,9 @@ from pydantic import BaseModel, Field
 
 from .config import AgentConfig
 from .session import AgentSession
-from .tools.base import BaseTool
-from .models.base import BaseModel as ModelProvider
-from .prompts.system import SystemPromptBuilder
+from ..tools.base import BaseTool
+from ..models.base import BaseModel as ModelProvider
+from ..prompts.system import SystemPromptBuilder
 
 logger = logging.getLogger(__name__)
 
@@ -79,10 +79,10 @@ class AgentOrchestrator:
     
     async def _initialize_tools(self) -> None:
         """Initialize all configured tools."""
-        from .tools.filesystem import FileSystemTool
-        from .tools.web import WebSearchTool
-        from .tools.translation import TranslationTool
-        from .tools.ner import NERTool
+        from ..tools.filesystem import FileSystemTool
+        from ..tools.web import WebSearchTool
+        from ..tools.translation import TranslationTool
+        from ..tools.ner import NERTool
         
         tool_configs = self.config.tools
         
@@ -114,9 +114,9 @@ class AgentOrchestrator:
     
     async def _initialize_models(self) -> None:
         """Initialize all configured model providers."""
-        from .models.deepseek import DeepSeekModel
-        from .models.gateway import GatewayModel
-        from .models.reasonix import ReasonixModel
+        from ..models.deepseek import DeepSeekModel
+        from ..models.gateway import GatewayModel
+        from ..models.reasonix import ReasonixModel
         
         model_configs = self.config.models
         

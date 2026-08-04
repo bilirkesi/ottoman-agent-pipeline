@@ -11,6 +11,7 @@ from datetime import datetime
 from .byok_routes import router as byok_router
 from .mcp_routes import router as mcp_router
 from .workflow_routes import router as workflow_router
+from .chat_routes import router as chat_router
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +22,9 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="Ottoman Agent Pipeline",
         description="Uçtan uca Osmanlı Türkçesi transliterasyon ajan pipeline'ı",
-        version="0.1.0"
+        version="0.1.0",
+        docs_url="/docs",
+        redoc_url="/redoc"
     )
     
     # CORS
@@ -37,6 +40,18 @@ def create_app() -> FastAPI:
     app.include_router(byok_router)
     app.include_router(mcp_router)
     app.include_router(workflow_router)
+    app.include_router(chat_router)
+    
+    # Root endpoint
+    @app.get("/")
+    async def root():
+        return {
+            "service": "Ottoman Agent Pipeline",
+            "version": "0.1.0",
+            "description": "Uçtan uca Osmanlı Türkçesi transliterasyon ajan pipeline'ı",
+            "docs": "/docs",
+            "health": "/health"
+        }
     
     # Health endpoint
     @app.get("/health")

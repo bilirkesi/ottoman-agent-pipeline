@@ -2,7 +2,7 @@
 MCP API Routes - Model Context Protocol endpoints
 """
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Body
 from pydantic import BaseModel, Field
 from typing import List, Optional, Any, Dict
 
@@ -84,7 +84,7 @@ async def get_tool(tool_id: str):
 @router.post("/tools/{tool_id}/execute", response_model=ToolResponse)
 async def execute_tool(
     tool_id: str,
-    params: Dict[str, Any] = Field(..., description="Tool parametreleri")
+    params: Dict[str, Any] = Body(..., description="Tool parametreleri")
 ):
     """
     Tool çalıştır

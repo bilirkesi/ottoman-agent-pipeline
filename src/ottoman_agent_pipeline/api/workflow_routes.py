@@ -2,7 +2,7 @@
 Workflow API Routes - Visual Workflow Editor endpoints
 """
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Body
 from pydantic import BaseModel, Field
 from typing import List, Optional, Any, Dict
 
@@ -58,27 +58,17 @@ async def list_workflows(
 
 
 @router.post("/", response_model=WorkflowInfo)
-async def create_workflow(
-    name: str = Field(..., description="Workflow adı"),
-    description: str = Field("", description="Açıklama"),
-    template_id: Optional[str] = None,
-    created_by: Optional[str] = None
-):
+async def create_workflow(request: dict = Body(...)):
     """
     Yeni workflow oluştur
-    
-    - **name**: Workflow adı
-    - **description**: Açıklama
-    - **template_id**: Şablon ID (opsiyonel)
-    - **created_by**: Oluşturan kullanıcı
     """
     try:
         registry = get_workflow_registry()
         workflow_id = await registry.create_workflow(
-            name=name,
-            description=description,
-            template_id=template_id,
-            created_by=created_by
+            name=request.get("name", "Untitled"),
+            description=request.get("description", ""),
+            template_id=request.get("template_id"),
+            created_by=request.get("created_by")
         )
         
         workflow = registry.get_workflow(workflow_id)
@@ -136,13 +126,10 @@ async def get_workflow(workflow_id: str):
 @router.post("/{workflow_id}/execute")
 async def execute_workflow(
     workflow_id: str,
-    input_data: Dict[str, Any] = Field({}, description="Giriş verileri")
+    input_data: Dict[str, Any] = Body({})
 ):
     """
     Workflow çalıştır
-    
-    - **workflow_id**: Workflow ID
-    - **input_data**: Giriş parametreleri
     """
     try:
         registry = get_workflow_registry()
@@ -186,13 +173,14 @@ async def get_workflow_executions(
 @router.post("/{workflow_id}/clone")
 async def clone_workflow(
     workflow_id: str,
-    new_name: str = Field(..., description="Yeni workflow adı")
+    request: dict = Body(...)
 ):
     """
     Workflow klonla
     """
     try:
         registry = get_workflow_registry()
+        new_name = request.get("new_name", "Clone")
         new_id = await registry.clone_workflow(workflow_id, new_name)
         
         if not new_id:
