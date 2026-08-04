@@ -24,6 +24,7 @@
 - [Benchmark Report](./docs/benchmark-report.md)
 - [CodeGraph](./docs/codegraph.md)
 - [NLP Graph](./docs/nlp-graph.md)
+- [BYOK](./docs/byok.md)
 
 ### Veri
 - [Osmanlica-Bench Dataset](./datasets/osmanlica-bench-v1.md)

@@ -22,6 +22,7 @@ README.md
             │   ├── okf/docs/deployment.md
             │   ├── okf/docs/codegraph.md
             │   ├── okf/docs/nlp-graph.md
+            │   ├── okf/docs/byok.md
             │   └── okf/datasets/osmanlica-bench-v1.md
             └── docs/
                 ├── CONTRIBUTING.md
