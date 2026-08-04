@@ -15,12 +15,11 @@
             </div>
             <div id="backend-status" class="status-indicator">
                 <span class="status-dot"></span>
-                <span class="status-text">Backend: Stopped</span>
+                <span class="status-text">Backend: Checking...</span>
             </div>
         </div>
         <div class="header-right">
-            <button id="btn-start-backend" class="btn btn-primary">Start Backend</button>
-            <button id="btn-stop-backend" class="btn btn-secondary" disabled>Stop Backend</button>
+            <button id="btn-test-backend" class="btn btn-secondary">Test Backend</button>
             <button id="btn-settings" class="btn btn-settings">Settings</button>
         </div>
     </header>
@@ -36,22 +35,6 @@
                     <span class="nav-icon">💬</span>
                     <span>Agent Chat</span>
                 </li>
-                <li class="nav-item" data-tab="workflows">
-                    <span class="nav-icon">⚡</span>
-                    <span>Workflows</span>
-                </li>
-                <li class="nav-item" data-tab="keys">
-                    <span class="nav-icon">🔑</span>
-                    <span>API Keys</span>
-                </li>
-                <li class="nav-item" data-tab="tools">
-                    <span class="nav-icon">🛠️</span>
-                    <span>Tools</span>
-                </li>
-                <li class="nav-item" data-tab="history">
-                    <span class="nav-icon">📊</span>
-                    <span>History</span>
-                </li>
             </ul>
         </nav>
 
@@ -59,11 +42,11 @@
             <!-- Transliterate Tab -->
             <div id="tab-transliterate" class="tab-content active">
                 <div class="panel">
-                    <h2>Ottoman Turkish Transliterator</h2>
+                    <h2>Osmanlıca ↔ Türkçe Çeviri</h2>
                     
                     <!-- Direction Selector -->
                     <div class="form-group direction-selector">
-                        <label>Translation Direction</label>
+                        <label>Çeviri Yönü</label>
                         <div class="radio-group direction-radio">
                             <label class="direction-option active">
                                 <input type="radio" name="direction" value="ot-to-tr" checked>
@@ -84,120 +67,55 @@
                     
                     <!-- Mode Selector -->
                     <div class="form-group">
-                        <label>Mode</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="mode" value="hybrid" checked> Hybrid (Recommended)</label>
-                            <label><input type="radio" name="mode" value="neural"> Neural</label>
-                            <label><input type="radio" name="mode" value="nlp"> NLP</label>
-                        </div>
+                        <label>Çeviri Modu</label>
+                        <select id="mode-select" class="text-input">
+                            <option value="hybrid" selected>Hybrid (Önerilen)</option>
+                            <option value="neural">Neural</option>
+                            <option value="nlp">NLP</option>
+                        </select>
                     </div>
                     
                     <!-- Input Area -->
                     <div class="form-group">
-                        <label for="input-text" id="input-label">Ottoman Turkish Text (Arap Harfi)</label>
+                        <label for="input-text" id="input-label">Osmanlıca Metin (Arap Harfi)</label>
                         <textarea id="input-text" class="text-input" rows="6" placeholder="عثمانلي توركجهسى..."></textarea>
-                    </div>
-                    
-                    <!-- Swap Button -->
-                    <div class="swap-container">
-                        <button id="btn-swap" class="btn btn-swap" title="Swap direction">⇅ Swap</button>
-                    </div>
-                    
-                    <!-- Output Area -->
-                    <div class="form-group">
-                        <label for="output-text" id="output-label">Modern Turkish Result</label>
-                        <textarea id="output-text" class="text-input output-textarea" rows="6" readonly placeholder="Sonuç burada görünecek..."></textarea>
                     </div>
                     
                     <!-- Action Buttons -->
                     <div class="action-buttons">
-                        <button id="btn-transliterate" class="btn btn-primary btn-large">Transliterate</button>
-                        <button id="btn-clear" class="btn btn-secondary">Clear</button>
-                        <button id="btn-copy" class="btn btn-secondary">Copy</button>
+                        <button id="btn-transliterate" class="btn btn-primary btn-large">Çevir</button>
+                        <button id="btn-clear" class="btn btn-secondary">Temizle</button>
+                        <button id="btn-copy" class="btn btn-secondary">Kopyala</button>
                     </div>
                     
-                    <!-- Metrics -->
-                    <div id="transliteration-metrics" class="metrics"></div>
+                    <!-- Output Area -->
+                    <div class="form-group">
+                        <label for="output-text" id="output-label">Modern Türkçe Sonuç</label>
+                        <textarea id="output-text" class="text-input output-textarea" rows="6" readonly placeholder="Sonuç burada görünecek..."></textarea>
+                    </div>
+                    
+                    <!-- Result Info -->
+                    <div id="result-info" class="result-info hidden">
+                        <span id="result-confidence"></span>
+                        <span id="result-method"></span>
+                        <span id="result-direction"></span>
+                    </div>
                 </div>
             </div>
 
             <!-- Chat Tab -->
             <div id="tab-chat" class="tab-content">
                 <div class="panel">
-                    <h2>Agent Chat</h2>
-                    <p class="chat-hint">Osmanlı Türkçesi transliterasyonu veya Türkçe→Osmanlıca çeviri için mesaj gönderin.</p>
+                    <h2>Agent Sohbet</h2>
+                    <p class="chat-hint">Osmanlı Türkçesi transliterasyonu veya çeviri için soru sorun.</p>
                     <div id="chat-messages" class="chat-messages">
                         <div class="chat-message assistant">
-                            Merhaba! Osmanlica Agent'e hoş geldiniz. Osmanlı Türkçesi transliterasyonu veya Türkçe→Osmanlıca çeviri için mesaj gönderebilirsiniz.
+                            Merhaba! Osmanlica Agent'e hoş geldiniz. Osmanlı Türkçesi transliterasyonu veya Türkçe→Osmanlıca çeviri için soru gönderebilirsiniz.
                         </div>
                     </div>
                     <div class="chat-input">
                         <input type="text" id="chat-input" class="text-input" placeholder="Mesajınızı yazın...">
                         <button id="btn-send" class="btn btn-primary">Gönder</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Workflows Tab -->
-            <div id="tab-workflows" class="tab-content">
-                <div class="panel">
-                    <h2>Workflows</h2>
-                    <button id="btn-new-workflow" class="btn btn-primary">New Workflow</button>
-                    <div id="workflows-list" class="list-container">
-                        <p>Loading...</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Keys Tab -->
-            <div id="tab-keys" class="tab-content">
-                <div class="panel">
-                    <h2>API Keys (BYOK)</h2>
-                    <div class="form-group">
-                        <label for="key-service">Service</label>
-                        <select id="key-service" class="text-input">
-                            <option value="deepseek">DeepSeek</option>
-                            <option value="gateway">DB-Mentat Gateway</option>
-                            <option value="anthropic">Anthropic</option>
-                            <option value="openai">OpenAI</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="key-value">API Key</label>
-                        <input type="password" id="key-value" class="text-input" placeholder="sk-xxx">
-                    </div>
-                    <div class="form-group">
-                        <label for="key-scope">Scope</label>
-                        <select id="key-scope" class="text-input">
-                            <option value="global">Global</option>
-                            <option value="agent">Agent</option>
-                            <option value="tool">Tool</option>
-                            <option value="user">User</option>
-                        </select>
-                    </div>
-                    <button id="btn-create-key" class="btn btn-primary">Create Key</button>
-                    <div id="keys-list" class="list-container">
-                        <p>Loading...</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tools Tab -->
-            <div id="tab-tools" class="tab-content">
-                <div class="panel">
-                    <h2>MCP Tools</h2>
-                    <div id="tools-list" class="list-container">
-                        <p>Loading...</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- History Tab -->
-            <div id="tab-history" class="tab-content">
-                <div class="panel">
-                    <h2>History</h2>
-                    <div id="history-list" class="list-container">
-                        <p>Loading...</p>
                     </div>
                 </div>
             </div>
@@ -207,18 +125,10 @@
     <!-- Settings Modal -->
     <div id="settings-modal" class="modal hidden">
         <div class="modal-content">
-            <h2>Settings</h2>
+            <h2>Ayarlar</h2>
             <div class="form-group">
                 <label for="setting-backend-url">Backend URL</label>
-                <input type="text" id="setting-backend-url" class="text-input" value="http://localhost:8000">
-            </div>
-            <div class="form-group">
-                <label for="setting-default-model">Default Model</label>
-                <select id="setting-default-model" class="text-input">
-                    <option value="deepseek-v4-flash">DeepSeek V4 Flash</option>
-                    <option value="deepseek-v4-pro">DeepSeek V4 Pro</option>
-                    <option value="qwen3-32b">Qwen3-32B</option>
-                </select>
+                <input type="text" id="setting-backend-url" class="text-input" value="http://localhost:8001">
             </div>
             <div class="modal-actions">
                 <button id="btn-close-settings" class="btn btn-secondary">Kapat</button>

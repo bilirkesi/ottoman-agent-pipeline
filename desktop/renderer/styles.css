@@ -140,6 +140,11 @@ header {
     background: var(--bg-tertiary);
 }
 
+.btn-large {
+    padding: 12px 24px;
+    font-size: 16px;
+}
+
 .btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -155,13 +160,12 @@ header {
 
 /* Sidebar */
 .sidebar {
-    width: 200px;
+    width: 180px;
     background: var(--bg-secondary);
     border-right: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
-    overflow-y: auto;
 }
 
 .sidebar ul {
@@ -268,53 +272,6 @@ select.text-input {
     cursor: pointer;
 }
 
-.radio-group {
-    display: flex;
-    gap: 20px;
-    margin: 16px 0;
-}
-
-.radio-group label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-/* Output */
-.result-box {
-    margin-top: 20px;
-    padding: 16px;
-    background: var(--bg-secondary);
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-}
-
-.result-box h3 {
-    margin-bottom: 12px;
-    font-size: 16px;
-    color: var(--text-secondary);
-}
-
-#transliteration-output {
-    font-size: 16px;
-    line-height: 1.6;
-    min-height: 60px;
-    padding: 12px;
-    background: var(--bg-primary);
-    border-radius: 6px;
-}
-
-#transliteration-metrics {
-    margin-top: 12px;
-    padding: 8px 12px;
-    background: var(--bg-tertiary);
-    border-radius: 6px;
-    font-size: 13px;
-    color: var(--text-secondary);
-}
-
 /* Direction Selector */
 .direction-selector {
     margin-bottom: 20px;
@@ -364,29 +321,7 @@ select.text-input {
     font-weight: 500;
 }
 
-/* Swap Button */
-.swap-container {
-    text-align: center;
-    margin: 16px 0;
-}
-
-.btn-swap {
-    background: var(--bg-tertiary);
-    color: var(--text-primary);
-    border: 1px solid var(--border-color);
-    padding: 8px 24px;
-    border-radius: 20px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.btn-swap:hover {
-    background: var(--accent-secondary);
-    border-color: var(--accent-secondary);
-}
-
-/* Output Textarea */
+/* Output */
 .output-textarea {
     background: var(--bg-secondary);
     border-color: var(--accent-primary);
@@ -408,6 +343,22 @@ select.text-input {
     padding: 12px 20px;
 }
 
+/* Result Info */
+.result-info {
+    display: flex;
+    gap: 20px;
+    margin-top: 16px;
+    padding: 12px;
+    background: var(--bg-tertiary);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.result-info.hidden {
+    display: none;
+}
+
 /* Chat */
 .chat-hint {
     color: var(--text-secondary);
@@ -420,7 +371,7 @@ select.text-input {
     overflow-y: auto;
     margin-bottom: 16px;
     padding: 12px;
-    background: var(--bg-secondary);
+    background: var(--bg-primary);
     border-radius: 8px;
     border: 1px solid var(--border-color);
 }
@@ -463,65 +414,6 @@ select.text-input {
 .chat-input input:focus {
     outline: none;
     border-color: var(--accent-primary);
-}
-
-/* List */
-.list-container {
-    margin-top: 20px;
-}
-
-.list-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px;
-    background: var(--bg-secondary);
-    border-radius: 8px;
-    margin-bottom: 8px;
-    border: 1px solid var(--border-color);
-}
-
-.list-item .key-info,
-.list-item .tool-info,
-.list-item .workflow-info,
-.list-item .history-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.list-item strong {
-    color: var(--text-primary);
-}
-
-.list-item span {
-    font-size: 12px;
-    color: var(--text-secondary);
-}
-
-.list-item .key-status {
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 11px;
-}
-
-.list-item .key-status.active {
-    background: var(--success);
-    color: #000;
-}
-
-.list-item button {
-    padding: 6px 12px;
-    background: var(--bg-tertiary);
-    border: none;
-    border-radius: 4px;
-    color: var(--text-primary);
-    cursor: pointer;
-    font-size: 12px;
-}
-
-.list-item button:hover {
-    background: var(--accent-primary);
 }
 
 /* Modal */
