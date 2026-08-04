@@ -20,6 +20,7 @@ README.md
             │   ├── okf/docs/architecture.md
             │   ├── okf/docs/api-reference.md
             │   ├── okf/docs/deployment.md
+            │   ├── okf/docs/codegraph.md
             │   └── okf/datasets/osmanlica-bench-v1.md
             └── docs/
                 ├── CONTRIBUTING.md
