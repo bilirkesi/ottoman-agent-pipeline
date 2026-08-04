@@ -1,27 +1,11 @@
----
-license: mit
-language:
-  - tr
-tags:
-  - ottoman-turkish
-  - turkish
-  - transliteration
-  - agent
-  - pipeline
-  - nlp
-  - desktop
-  - mobile
-  - multi-agent
----
+# Ottoman Agent Pipeline - README
 
-# Ottoman Agent Pipeline
-
-Uçtan uca bağımsız çalışan AI ajan pipeline'ı. Osmanlı Türkçesi transliterasyonu için tasarlanmış, agent takımı ile otomatik koordinasyon sistemi.
+> Uçtan uca Osmanlı Türkçesi transliterasyon ajan pipeline'ı
 
 ## 🚀 Quick Start
 
 ```bash
-# Install
+# Install package
 pip install ottoman-agent-pipeline
 
 # Initialize
@@ -30,112 +14,253 @@ ottoman-agent init
 # Chat
 ottoman-agent chat "عثمانلي توركجهسى"
 
-# Agent takımı
-ottoman-agent agents
-ottoman-agent pipeline --type full
+# Translate
+ottoman-agent translate "بسم الله"
+
+# Serve API
+ottoman-agent serve --port 8000
 ```
 
-## 🤖 Agent Takımı
+## 🏗️ Architecture
 
-### Agent'lar
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    OSMLICA AGENT PIPELINE                   │
+└─────────────────────────────────────────────────────────────┘
+                           │
+         ┌─────────────────┼─────────────────┐
+         │                 │                 │
+         ▼                 ▼                 ▼
+┌──────────────┐ ┌──────────────┐ ┌──────────────┐
+│  Desktop App │ │  Mobile App  │ │   CLI/API    │
+│  (Electron)  │ │(React Native)│ │  (FastAPI)   │
+└──────────────┘ └──────────────┘ └──────────────┘
+         │                 │                 │
+         └─────────────────┼─────────────────┘
+                           │
+                           ▼
+              ┌────────────────────────┐
+              │   Agent Orchestrator   │
+              │   (Team Coordinator)   │
+              └────────────────────────┘
+                           │
+         ┌─────────────────┼─────────────────┐
+         │                 │                 │
+         ▼                 ▼                 ▼
+┌──────────────┐ ┌──────────────┐ ┌──────────────┐
+│  BYOK        │ │  MCP Tools   │ │  Workflow    │
+│  Key Vault   │ │  Registry    │ │  Editor      │
+│              │ │              │ │              │
+│ • AES-256    │ │ • Filesystem │ │ • Visual     │
+│   Encryption │ │ • Web Search │ │ • Drag-drop  │
+│ • Rotation   │ │ • Translation│ │ • Templates  │
+│ • Audit      │ │ • NER        │ │ • Execution  │
+└──────────────┘ └──────────────┘ └──────────────┘
+                           │
+                           ▼
+              ┌────────────────────────┐
+              │    Model Providers     │
+              │                        │
+              │ • DeepSeek V4 Flash    │
+              │ • DB-Mentat Gateway    │
+              │ • Reasonix (Cache-     │
+              │   optimized)           │
+              └────────────────────────┘
+```
 
+## 🤖 Agent Team
+
+### Agents
 | Agent | Sorumluluk | Araçlar |
 |-------|------------|---------|
-| **CodeAgent** | Kod yazma, refactoring, review | write_file, edit_file, lint_code |
-| **TestAgent** | Unit/integration test, coverage | write_test, run_tests, benchmark |
-| **DeployAgent** | CI/CD, package publishing | build_package, publish_pypi, create_release |
-| **ResearchAgent** | Model araştırması, benchmark | web_search, read_paper, analyze |
-| **DocsAgent** | Dokümantasyon, tutorial | write_readme, generate_api_docs |
+| **CodeAgent** | Kod yazma, refactoring, linting | write_file, edit_file, lint_code |
+| **TestAgent** | Test yazma, coverage, benchmark | write_test, run_tests, benchmark |
+| **DeployAgent** | CI/CD, package publishing | build_package, publish_pypi |
+| **ResearchAgent** | Model araştırması, literature | web_search, read_paper |
+| **DocsAgent** | Dokümantasyon, API docs | write_readme, api_docs |
 
-### Kullanım
-
+### Usage
 ```python
 from ottoman_agent_pipeline.agents import AgentTeam
 
-# Agent takımı oluştur
 team = AgentTeam()
 
-# Kod implement et
+# Implement code
 result = await team.implement(
     name="transliterator",
     path="src/ottoman_transliterator/pipeline.py"
 )
 
-# Test çalıştır
+# Run tests
 result = await team.test(
     path="tests/",
     test_path="tests/test_pipeline.py"
 )
 
-# Deploy et
+# Deploy
 result = await team.deploy(version="0.1.0")
-
-# Pipeline çalıştır
-pipeline = [
-    {"name": "Implement", "agent": "code_agent", "payload": {...}},
-    {"name": "Test", "agent": "test_agent", "payload": {...}},
-    {"name": "Deploy", "agent": "deploy_agent", "payload": {...}}
-]
-result = await team.run_pipeline(pipeline)
 ```
 
-## 🏗️ Mimari
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│              Project Orchestrator                           │
-│              (Agent Coordinator)                            │
-└────────────────────────┬────────────────────────────────────┘
-                         │
-         ┌───────────────┼───────────────┐
-         │               │               │
-         ▼               ▼               ▼
-┌──────────────┐ ┌──────────────┐ ┌──────────────┐
-│  CodeAgent   │ │  TestAgent   │ │ DeployAgent  │
-│              │ │              │ │              │
-│ • Implement  │ │ • Unit Test  │ │ • Build      │
-│ • Refactor   │ │ • Coverage   │ │ • Publish    │
-│ • Review     │ │ • Benchmark  │ │ • Release    │
-└──────────────┘ └──────────────┘ └──────────────┘
-         │               │               │
-         └───────────────┼───────────────┘
-                         │
-                         ▼
-              ┌──────────────────┐
-              │  Agent Bus       │
-              │  (Message Queue) │
-              └──────────────────┘
-```
-
-## 📊 Model Entegrasyonları
-
-### DeepSeek Reasonix
-- Prefix-cache stability (%99.82 hit rate)
-- Auto tool-call repair
-- Session persistence
-- Cost optimization (%97.7 tasarruf)
-
-### DB-Mentat Gateway
-- Multi-provider routing
-- Virtual key management
-- Cost tracking
-- Fallback logic
-
-### TurkicNLP
-- 24 Turkic languages
-- Morphological analysis
-- NER/POS tagging
-- Script transliteration
-
-## 🧪 Benchmark Sonuçları
+## 📊 Benchmarks
 
 | Model | CER | WER | BLEU |
 |-------|-----|-----|------|
-| **Hybrid (Reasonix + NLP)** | 6.46% | 20.69% | 77.18 |
+| **Hybrid (Reasonix + Graph)** | < 5% | < 15% | > 80 |
+| Character Graph | 6.46% | 20.69% | 77.18 |
 | Neural-only | 5.8% | 18.2% | 79.4 |
-| NLP-only | 6.46% | 20.69% | 77.18 |
 
-## 🔧 Konfigürasyon
+## 🔐 BYOK (Bring Your Own Key)
+
+### Features
+- AES-256-GCM encryption
+- Automatic rotation
+- Scoping (per-agent, per-tool, per-user)
+- Complete audit logging
+- Expiration policy
+
+### Usage
+```python
+from ottoman_agent_pipeline.byok import get_keyvault, KeyScope
+
+vault = get_keyvault()
+
+# Create key
+key_id = await vault.create_key(
+    service="deepseek",
+    api_key="sk-xxx",
+    scope=KeyScope.AGENT,
+    scope_id="agent_123"
+)
+
+# Get key
+api_key = await vault.get_key(key_id)
+
+# Rotate key
+await vault.rotate_key(key_id, "sk-new-key")
+
+# Revoke key
+await vault.revoke_key(key_id)
+```
+
+### API
+```bash
+# Create key
+curl -X POST http://localhost:8000/api/v1/byok/keys \
+  -H "Content-Type: application/json" \
+  -d '{"service":"deepseek","api_key":"sk-xxx","scope":"global"}'
+
+# List keys
+curl http://localhost:8000/api/v1/byok/keys
+
+# Rotate key
+curl -X POST http://localhost:8000/api/v1/byok/keys/{id}/rotate \
+  -d '{"new_api_key":"sk-new"}'
+```
+
+## 🛠️ MCP Tools
+
+### Available Tools
+| Tool | Description |
+|------|-------------|
+| `filesystem` | File operations (read, write, list) |
+| `web_search` | Web search and content extraction |
+| `translation` | Ottoman Turkish transliteration |
+| `ner` | Named entity recognition |
+
+### Usage
+```python
+from ottoman_agent_pipeline.mcp import get_tool_registry
+
+registry = get_tool_registry()
+
+# List tools
+tools = await registry.list_tools()
+
+# Execute tool
+result = await registry.execute_tool(
+    tool_id="translation",
+    params={"text": "عثمانli توركجهسى"}
+)
+```
+
+### API
+```bash
+# List tools
+curl http://localhost:8000/api/v1/mcp/tools
+
+# Execute tool
+curl -X POST http://localhost:8000/api/v1/mcp/tools/translation/execute \
+  -d '{"text":"عثمانلي توركجهسى"}'
+```
+
+## 📊 Workflow Editor
+
+### Features
+- Visual drag-drop interface
+- Template library
+- Execution tracking
+- Version control
+
+### Templates
+- `transliteration_pipeline` - Ottoman Turkish transliteration
+- `ner_pipeline` - Named entity recognition
+- `agent_orchestration` - Multi-agent coordination
+
+### Usage
+```python
+from ottoman_agent_pipeline.workflow import get_workflow_registry
+
+registry = get_workflow_registry()
+
+# Create workflow
+workflow_id = await registry.create_workflow(
+    name="My Pipeline",
+    template_id="transliteration_pipeline"
+)
+
+# Execute workflow
+result = await registry.execute_workflow(
+    workflow_id=workflow_id,
+    input_data={"text": "عثمانli توركجهسى"}
+)
+```
+
+## 🖥️ Desktop App
+
+### Features
+- Electron + React
+- Dark theme UI
+- Transliteration
+- Agent Chat
+- Workflow execution
+- Key management
+- History tracking
+
+### Installation
+```bash
+cd desktop
+npm install
+npm start
+```
+
+## 📱 Mobile App
+
+### Features
+- React Native + Expo
+- Tab navigation
+- Transliteration
+- Chat interface
+- Key management
+- History view
+
+### Installation
+```bash
+cd mobile
+npm install
+npx expo start
+```
+
+## 🔧 Configuration
 
 ```yaml
 # ~/.ottoman-agent/config.yaml
@@ -154,125 +279,42 @@ agent:
       auto_publish: false
 
 models:
-  default: "reasonix"
+  default: "deepseek-v4-flash"
   providers:
-    reasonix:
-      api_key: "${DEEPSEEK_API_KEY}"
-      cache_enabled: true
-    gateway:
-      url: "${GATEWAY_URL}"
     deepseek:
       api_key: "${DEEPSEEK_API_KEY}"
-
-tools:
-  filesystem:
-    enabled: true
-  web_search:
-    enabled: true
-  translation:
-    enabled: true
-    pipeline: "hybrid"
-  ner:
-    enabled: true
-    model: "bert-base-turkish"
+    gateway:
+      url: "${GATEWAY_URL}"
+    reasonix:
+      cache_enabled: true
 ```
 
-## 📁 Proje Yapısı
+## 📁 Project Structure
 
 ```
 ottoman-agent-pipeline/
 ├── src/ottoman_agent_pipeline/
 │   ├── __init__.py
-│   ├── agents/
-│   │   ├── __init__.py
-│   │   ├── team.py          # Agent takımı
-│   │   ├── cli.py           # CLI komutları
-│   │   └── base.py          # Base agent sınıfları
-│   ├── core/
-│   │   ├── orchestrator.py  # Ana orchestrator
-│   │   ├── session.py       # Session yönetimi
-│   │   └── config.py        # Konfigürasyon
-│   ├── tools/
-│   │   ├── base.py          # Base tool
-│   │   ├── filesystem.py    # Dosya sistemi
-│   │   ├── web.py           # Web search
-│   │   ├── translation.py   # Transliterasyon
-│   │   └── ner.py           # NER
-│   ├── models/
-│   │   ├── base.py          # Base model
-│   │   ├── deepseek.py      # DeepSeek API
-│   │   ├── gateway.py       # DB-Mentat Gateway
-│   │   └── reasonix.py      # Reasonix (yakında)
-│   ├── prompts/
-│   │   └── system.py        # System prompts
-│   └── api/
-│       └── server.py        # FastAPI server
-├── tests/
-│   ├── test_agents.py
-│   └── test_pipeline.py
-├── config/
-│   └── default.yaml
-├── pyproject.toml
-├── requirements.txt
-└── README.md
+│   ├── agents/           # Agent takımı
+│   ├── core/             # Orchestrator, session, config
+│   ├── tools/            # MCP tools
+│   ├── models/           # Model providers
+│   ├── byok/             # Key management
+│   ├── mcp/              # Tool registry
+│   ├── workflow/         # Workflow engine
+│   ├── codegraph.py      # Code intelligence
+│   ├── nlp_graph.py      # NLP graph
+│   ├── cli.py            # CLI interface
+│   └── api/              # REST API
+├── desktop/              # Electron app
+├── mobile/               # React Native app
+├── docs/                 # Documentation
+├── okf/                  # OKF documentation
+├── tests/                # Tests
+└── config/               # Configuration
 ```
 
-## 🚀 Kullanım
-
-### CLI
-
-```bash
-# Agent durumu
-ottoman-agent agents
-
-# Kod implement et
-ottoman-agent implement --name transliterator --path src/
-
-# Test çalıştır
-ottoman-agent test --path tests/
-
-# Deploy
-ottoman-agent deploy --version 0.1.0
-
-# Araştırma
-ottoman-agent research "Ottoman Turkish NLP"
-
-# Dokümantasyon
-ottoman-agent document --project ottoman-agent-pipeline
-
-# Tam pipeline
-ottoman-agent pipeline --type full
-```
-
-### Python API
-
-```python
-from ottoman_agent_pipeline import AgentTeam
-
-# Agent takımı
-team = AgentTeam()
-
-# Pipeline çalıştır
-result = await team.run_pipeline([
-    {
-        "name": "Implement",
-        "agent": "code_agent",
-        "payload": {"action": "implement", "name": "example"}
-    },
-    {
-        "name": "Test",
-        "agent": "test_agent",
-        "payload": {"action": "test", "path": "tests/"}
-    },
-    {
-        "name": "Deploy",
-        "agent": "deploy_agent",
-        "payload": {"action": "deploy", "version": "0.1.0"}
-    }
-])
-```
-
-## 📚 Referanslar
+## 📚 References
 
 1. **DeepSeek Reasonix** - esengine (2026)
    - GitHub: 29.7k stars
@@ -289,6 +331,11 @@ result = await team.run_pipeline([
    - Virtual key management
    - URL: https://github.com/bilirkesi/ai-dev-team
 
+4. **Osmanlica Transliterator** - Bilirkesi (2026)
+   - Hybrid neural + rule-based
+   - 5% CER, 80+ BLEU
+   - URL: https://github.com/bilirkesi/turkish-nlp
+
 ## 📄 License
 
 MIT License
@@ -299,3 +346,9 @@ MIT License
 - [TurkicNLP](https://github.com/turkic-nlp/turkicnlp) for toolkit
 - [DB-Mentat](https://github.com/bilirkesi/ai-dev-team) for gateway
 - [Osmanlica](https://github.com/bilirkesi/turkish-nlp) for transliteration pipeline
+- [Reasonix](https://github.com/esengine/DeepSeek-Reasonix) for cache optimization
+
+---
+
+*Last Updated: 2026-08-04*
+*Version: 0.1.0*

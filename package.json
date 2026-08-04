@@ -11,19 +11,9 @@
     "build:mac": "electron-builder --mac",
     "build:linux": "electron-builder --linux"
   },
-  "keywords": [
-    "ottoman",
-    "turkish",
-    "nlp",
-    "transliteration",
-    "desktop"
-  ],
+  "keywords": ["ottoman", "turkish", "nlp", "transliteration", "desktop"],
   "author": "Bilirkesi AI Team",
   "license": "MIT",
-  "devDependencies": {
-    "electron": "^31.7.7",
-    "electron-builder": "^24.13.3"
-  },
   "build": {
     "appId": "ai.bilirkesi.ottoman-agent",
     "productName": "Ottoman Agent",
@@ -37,15 +27,21 @@
     ],
     "win": {
       "target": "nsis",
-      "icon": "resources/icon.ico"
+      "icon": "resources/icon.png",
+      "artifactName": "Ottoman-Agent-${version}-win.${ext}"
     },
     "mac": {
       "target": "dmg",
-      "icon": "resources/icon.icns"
+      "icon": "resources/icon.png",
+      "category": "public.app-category.productivity"
     },
     "linux": {
-      "target": "AppImage",
+      "target": ["AppImage", "deb"],
       "icon": "resources/icon.png"
     }
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.9.0"
   }
 }
