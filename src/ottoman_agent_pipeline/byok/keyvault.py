@@ -335,6 +335,9 @@ class KeyVault:
             success=True
         )
         
+        # Persist
+        self._save()
+        
         logger.info(f"Created key: {key_id} for service: {service}")
         return key_id
     
@@ -444,6 +447,9 @@ class KeyVault:
             success=True
         )
         
+        # Persist
+        self._save()
+        
         logger.info(f"Rotated key: {key_id}")
         return True
     
@@ -464,6 +470,9 @@ class KeyVault:
             user_id=user_id,
             success=True
         )
+        
+        # Persist
+        self._save()
         
         logger.info(f"Revoked key: {key_id}")
         return True
@@ -573,7 +582,7 @@ class KeyVault:
             "services": list(set(k.metadata.service for k in self.keys.values()))
         }
     
-    async def _load(self):
+    def _load(self):
         """Data'yı yükle"""
         storage_file = self.storage_path / "keyvault.json"
         
@@ -581,8 +590,8 @@ class KeyVault:
             return
         
         try:
-            async with aiofiles.open(storage_file, 'r', encoding='utf-8') as f:
-                data = json.loads(await f.read())
+            with open(storage_file, "r", encoding="utf-8") as f:
+                data = json.load(f)
             
             # Load keys
             for key_data in data.get("keys", []):
@@ -599,7 +608,7 @@ class KeyVault:
         except Exception as e:
             logger.error(f"Error loading keyvault: {e}")
     
-    async def _save(self):
+    def _save(self):
         """Data'yı kaydet"""
         storage_file = self.storage_path / "keyvault.json"
         
@@ -616,8 +625,8 @@ class KeyVault:
                 }
             }
             
-            async with aiofiles.open(storage_file, 'w', encoding='utf-8') as f:
-                await f.write(json.dumps(data, indent=2, ensure_ascii=False))
+            with open(storage_file, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
             
             logger.debug(f"Saved {len(self.keys)} keys, {len(self.audit_logs)} audit logs")
             
@@ -626,7 +635,7 @@ class KeyVault:
     
     async def save(self):
         """Vault'u kaydet"""
-        await self._save()
+        self._save()
 
 
 # Service-specific key managers

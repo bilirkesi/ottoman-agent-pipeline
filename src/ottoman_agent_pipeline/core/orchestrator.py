@@ -380,7 +380,7 @@ class AgentOrchestrator:
             "tools": list(self.tools.keys()),
             "models": list(self.models.keys()),
             "session_messages": len(self.session.messages),
-            "config": self.config.dict()
+            "config": self.config.model_dump()
         }
     
     def reset_session(self) -> None:

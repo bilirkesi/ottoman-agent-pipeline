@@ -20,6 +20,15 @@ loguru>=0.7.0
 aiofiles>=24.1.0
 sentencepiece>=0.2.0
 
+# Graph systems (codegraph, nlp_graph, workflow)
+networkx>=3.0
+
+# Security (byok keyvault)
+cryptography>=42.0
+
+# Ottoman transliteration engine
+ottoman-transliterator>=0.0.0
+
 # Dev dependencies
 pytest>=8.0.0
 pytest-asyncio>=0.24.0

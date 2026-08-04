@@ -437,7 +437,7 @@ class MCPToolRegistry:
             counts[call.tool_name] = counts.get(call.tool_name, 0) + 1
         return counts
     
-    async def _load(self):
+    def _load(self):
         """Data'yı yükle"""
         storage_file = self.storage_path / "registry.json"
         
@@ -447,8 +447,8 @@ class MCPToolRegistry:
             return
         
         try:
-            async with aiofiles.open(storage_file, 'r', encoding='utf-8') as f:
-                data = json.loads(await f.read())
+            with open(storage_file, "r", encoding="utf-8") as f:
+                data = json.load(f)
             
             # Load tools
             for tool_data in data.get("tools", []):
@@ -466,7 +466,7 @@ class MCPToolRegistry:
             logger.error(f"Error loading registry: {e}")
             self._init_default_tools()
     
-    async def _save(self):
+    def _save(self):
         """Data'yı kaydet"""
         storage_file = self.storage_path / "registry.json"
         
@@ -481,8 +481,8 @@ class MCPToolRegistry:
                 }
             }
             
-            async with aiofiles.open(storage_file, 'w', encoding='utf-8') as f:
-                await f.write(json.dumps(data, indent=2, ensure_ascii=False))
+            with open(storage_file, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
             
         except Exception as e:
             logger.error(f"Error saving registry: {e}")

@@ -8,7 +8,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 logger = logging.getLogger(__name__)
 
@@ -52,8 +52,7 @@ class AgentSession(BaseModel):
     auto_save: bool = True
     save_dir: Path = Path("./data/sessions")
     
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
     
     def add_message(self, role: str, content: str, **kwargs) -> None:
         """Add a message to the session."""

@@ -161,7 +161,8 @@ class WorkflowRegistry:
         self.workflows: Dict[str, Workflow] = {}
         self._load()
     
-    async def create_workflow(self, name: str, description: str = "", 
+    async def create_workflow(self, name: str, description: str = "",
+                               template_id: Optional[str] = None,
                                created_by: Optional[str] = None) -> str:
         workflow_id = f"wf_{uuid.uuid4().hex[:8]}"
         workflow = Workflow(
@@ -170,6 +171,14 @@ class WorkflowRegistry:
             description=description,
             created_by=created_by
         )
+
+        # Apply template nodes/edges if requested
+        if template_id:
+            template = WorkflowTemplate.get_template(template_id)
+            if template:
+                workflow.nodes = [WorkflowNode(**node.to_dict()) for node in template.nodes]
+                workflow.edges = [WorkflowEdge(**edge.to_dict()) for edge in template.edges]
+
         self.workflows[workflow_id] = workflow
         self._save()
         return workflow_id
@@ -177,35 +186,38 @@ class WorkflowRegistry:
     def get_workflow(self, workflow_id: str) -> Optional[Workflow]:
         return self.workflows.get(workflow_id)
     
-    def list_workflows(self) -> List[Dict]:
+    def list_workflows(self, status: Optional[str] = None) -> List[Dict]:
         return [
             {
                 "workflow_id": wf_id,
                 "name": wf.name,
+                "description": wf.description,
                 "status": wf.status,
                 "version": wf.version,
-                "node_count": len(wf.nodes)
+                "node_count": len(wf.nodes),
+                "edge_count": len(wf.edges),
+                "created_at": wf.created_at.isoformat(),
+                "updated_at": wf.updated_at.isoformat()
             }
             for wf_id, wf in self.workflows.items()
+            if status is None or wf.status == status
         ]
     
-    async def _load(self):
+    def _load(self):
         storage_file = self.storage_path / "workflows.json"
         if storage_file.exists():
             try:
-                import aiofiles
-                async with aiofiles.open(storage_file, 'r') as f:
-                    data = json.loads(await f.read())
+                with open(storage_file, "r", encoding="utf-8") as f:
+                    data = json.load(f)
                 for wf_data in data.get("workflows", []):
                     workflow = Workflow.from_dict(wf_data)
                     self.workflows[workflow.workflow_id] = workflow
             except Exception as e:
                 logger.error(f"Error loading workflows: {e}")
-    
-    async def _save(self):
+
+    def _save(self):
         storage_file = self.storage_path / "workflows.json"
         try:
-            import aiofiles
             data = {
                 "workflows": [wf.to_dict() for wf in self.workflows.values()],
                 "metadata": {
@@ -213,8 +225,8 @@ class WorkflowRegistry:
                     "updated_at": datetime.now().isoformat()
                 }
             }
-            async with aiofiles.open(storage_file, 'w') as f:
-                await f.write(json.dumps(data, indent=2))
+            with open(storage_file, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
         except Exception as e:
             logger.error(f"Error saving workflows: {e}")
 
