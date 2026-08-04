@@ -156,5 +156,32 @@ def main(
         _config_manager.config_path = config
 
 
+@app.command()
+def agents():
+    """Agent takımı durumu"""
+    from .agents import get_agent_team
+    team = get_agent_team()
+    status = team.get_status()
+    
+    print("\n=== Agent Takımı Durumu ===")
+    for name, info in status["agents"].items():
+        print(f"  {name}: ready")
+    print(f"\nCompleted: {status['tasks_completed']}")
+    print(f"Failed: {status['tasks_failed']}")
+
+
+@app.command()
+def pipeline(
+    type: str = typer.Option("default", "--type", "-t", help="Pipeline tipi")
+):
+    """Tam pipeline çalıştır"""
+    from .agents import run_full_pipeline
+    
+    logger.info(f"Running pipeline: {type}")
+    result = asyncio.run(run_full_pipeline())
+    
+    print(json.dumps(result, indent=2, ensure_ascii=False))
+
+
 if __name__ == "__main__":
     app()
