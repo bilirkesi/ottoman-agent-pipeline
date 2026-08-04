@@ -65,32 +65,108 @@ window.ottomanAgent.onBackendError((data) => {
     console.error('Backend error:', data);
 });
 
-// Transliteration
+// Transliteration - TWO-WAY
 const btnTransliterate = document.getElementById('btn-transliterate');
-const ottomanInput = document.getElementById('ottoman-input');
-const outputBox = document.getElementById('transliteration-output');
+const inputText = document.getElementById('input-text');
+const outputText = document.getElementById('output-text');
 const metricsBox = document.getElementById('transliteration-metrics');
+const inputLabel = document.getElementById('input-label');
+const outputLabel = document.getElementById('output-label');
+const btnSwap = document.getElementById('btn-swap');
+const btnClear = document.getElementById('btn-clear');
+const btnCopy = document.getElementById('btn-copy');
+
+let currentDirection = 'ot-to-tr';
+
+// Direction selector
+document.querySelectorAll('input[name="direction"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+        currentDirection = e.target.value;
+        updateDirectionUI();
+    });
+});
+
+// Swap button - swap input and output
+btnSwap.addEventListener('click', () => {
+    // Swap input and output
+    const temp = inputText.value;
+    inputText.value = outputText.value;
+    outputText.value = temp;
+    
+    // Swap direction
+    currentDirection = currentDirection === 'ot-to-tr' ? 'tr-to-ot' : 'ot-to-tr';
+    document.querySelector(`input[name="direction"][value="${currentDirection}"]`).checked = true;
+    
+    updateDirectionUI();
+});
+
+// Clear button
+btnClear.addEventListener('click', () => {
+    inputText.value = '';
+    outputText.value = '';
+    metricsBox.textContent = '';
+});
+
+// Copy button
+btnCopy.addEventListener('click', () => {
+    if (outputText.value) {
+        navigator.clipboard.writeText(outputText.value);
+        const originalText = btnCopy.textContent;
+        btnCopy.textContent = 'Copied!';
+        setTimeout(() => {
+            btnCopy.textContent = originalText;
+        }, 1500);
+    }
+});
+
+function updateDirectionUI() {
+    // Update labels
+    if (currentDirection === 'ot-to-tr') {
+        inputLabel.textContent = 'Ottoman Turkish Text (Arap Harfi)';
+        inputText.placeholder = 'عثمانلي توركجهسى...';
+        outputLabel.textContent = 'Modern Turkish Result';
+        outputText.placeholder = 'Result will appear here...';
+    } else {
+        inputLabel.textContent = 'Modern Turkish Text';
+        inputText.placeholder = 'Osmanlı Türkçesi...';
+        outputLabel.textContent = 'Osmanlıca Result (Arap Harfi)';
+        outputText.placeholder = 'عثمانلي توركجهسى...';
+    }
+    
+    // Update active state
+    document.querySelectorAll('.direction-option').forEach(opt => {
+        opt.classList.remove('active');
+    });
+    document.querySelector(`input[name="direction"][value="${currentDirection}"]`).closest('.direction-option').classList.add('active');
+}
 
 btnTransliterate.addEventListener('click', async () => {
-    const text = ottomanInput.value.trim();
+    const text = inputText.value.trim();
     if (!text) {
-        outputBox.textContent = 'Lütfen Osmanlı Türkçesi metin girin';
+        outputText.textContent = 'Lütfen metin girin';
         return;
     }
     const mode = document.querySelector('input[name="mode"]:checked').value;
-    outputBox.textContent = 'Transliterasyon yapılıyor...';
+    outputText.textContent = 'İşleniyor...';
     metricsBox.textContent = '';
     
     try {
-        const result = await window.ottomanAgent.transliterate(text, { mode });
+        const result = await window.ottomanAgent.transliterate(text, { 
+            mode,
+            direction: currentDirection
+        });
         if (result.error) {
-            outputBox.textContent = `Hata: ${result.error}`;
+            outputText.textContent = `Hata: ${result.error}`;
         } else {
-            outputBox.textContent = result.modern_turkish || result.output || JSON.stringify(result, null, 2);
-            metricsBox.innerHTML = `Güven: %{(result.confidence * 100).toFixed(1)} | Yöntem: ${result.method || mode} | Chunk: ${result.chunks || 1}`;
+            // Determine output field based on direction
+            const output = currentDirection === 'ot-to-tr' 
+                ? (result.modern_turkish || result.output)
+                : (result.osmanlica || result.output);
+            outputText.textContent = output || JSON.stringify(result, null, 2);
+            metricsBox.innerHTML = `Güven: ${(result.confidence * 100).toFixed(1)}% | Yöntem: ${result.method || mode} | Yön: ${currentDirection === 'ot-to-tr' ? 'Osmanlıca→Türkçe' : 'Türkçe→Osmanlıca'}`;
         }
     } catch (error) {
-        outputBox.textContent = `Hata: ${error.message}`;
+        outputText.textContent = `Hata: ${error.message}`;
     }
 });
 
@@ -436,7 +512,7 @@ window.ottomanAgent.onMenuAction((action) => {
                         alert('Dosya okunurken hata');
                         return;
                     }
-                    ottomanInput.value = data;
+                    inputText.value = data;
                 });
             }
         });

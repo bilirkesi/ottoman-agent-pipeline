@@ -60,10 +60,29 @@
             <div id="tab-transliterate" class="tab-content active">
                 <div class="panel">
                     <h2>Ottoman Turkish Transliterator</h2>
-                    <div class="form-group">
-                        <label for="ottoman-input">Ottoman Turkish Text (Arap Harfi)</label>
-                        <textarea id="ottoman-input" class="text-input" rows="5" placeholder="عثمانلي توركجهسى..."></textarea>
+                    
+                    <!-- Direction Selector -->
+                    <div class="form-group direction-selector">
+                        <label>Translation Direction</label>
+                        <div class="radio-group direction-radio">
+                            <label class="direction-option active">
+                                <input type="radio" name="direction" value="ot-to-tr" checked>
+                                <span class="direction-label">
+                                    <span class="direction-icon">📜</span>
+                                    <span class="direction-text">Osmanlıca → Türkçe</span>
+                                </span>
+                            </label>
+                            <label class="direction-option">
+                                <input type="radio" name="direction" value="tr-to-ot">
+                                <span class="direction-label">
+                                    <span class="direction-icon">🔄</span>
+                                    <span class="direction-text">Türkçe → Osmanlıca</span>
+                                </span>
+                            </label>
+                        </div>
                     </div>
+                    
+                    <!-- Mode Selector -->
                     <div class="form-group">
                         <label>Mode</label>
                         <div class="radio-group">
@@ -72,12 +91,33 @@
                             <label><input type="radio" name="mode" value="nlp"> NLP</label>
                         </div>
                     </div>
-                    <button id="btn-transliterate" class="btn btn-primary btn-large">Transliterate</button>
-                    <div class="result-box">
-                        <h3>Modern Turkish Result</h3>
-                        <div id="transliteration-output"></div>
-                        <div id="transliteration-metrics"></div>
+                    
+                    <!-- Input Area -->
+                    <div class="form-group">
+                        <label for="input-text" id="input-label">Ottoman Turkish Text (Arap Harfi)</label>
+                        <textarea id="input-text" class="text-input" rows="6" placeholder="عثمانلي توركجهسى..."></textarea>
                     </div>
+                    
+                    <!-- Swap Button -->
+                    <div class="swap-container">
+                        <button id="btn-swap" class="btn btn-swap" title="Swap direction">⇅ Swap</button>
+                    </div>
+                    
+                    <!-- Output Area -->
+                    <div class="form-group">
+                        <label for="output-text" id="output-label">Modern Turkish Result</label>
+                        <textarea id="output-text" class="text-input output-textarea" rows="6" readonly placeholder="Sonuç burada görünecek..."></textarea>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <button id="btn-transliterate" class="btn btn-primary btn-large">Transliterate</button>
+                        <button id="btn-clear" class="btn btn-secondary">Clear</button>
+                        <button id="btn-copy" class="btn btn-secondary">Copy</button>
+                    </div>
+                    
+                    <!-- Metrics -->
+                    <div id="transliteration-metrics" class="metrics"></div>
                 </div>
             </div>
 

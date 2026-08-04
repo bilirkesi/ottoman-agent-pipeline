@@ -315,6 +315,99 @@ select.text-input {
     color: var(--text-secondary);
 }
 
+/* Direction Selector */
+.direction-selector {
+    margin-bottom: 20px;
+    padding: 16px;
+    background: var(--bg-primary);
+    border-radius: 8px;
+}
+
+.direction-radio {
+    display: flex;
+    gap: 16px;
+    margin-top: 8px;
+}
+
+.direction-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex: 1;
+}
+
+.direction-option:hover {
+    border-color: var(--accent-primary);
+}
+
+.direction-option.active {
+    border-color: var(--accent-primary);
+    background: var(--bg-tertiary);
+}
+
+.direction-option input[type="radio"] {
+    display: none;
+}
+
+.direction-icon {
+    font-size: 24px;
+}
+
+.direction-text {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Swap Button */
+.swap-container {
+    text-align: center;
+    margin: 16px 0;
+}
+
+.btn-swap {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    padding: 8px 24px;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-swap:hover {
+    background: var(--accent-secondary);
+    border-color: var(--accent-secondary);
+}
+
+/* Output Textarea */
+.output-textarea {
+    background: var(--bg-secondary);
+    border-color: var(--accent-primary);
+    color: var(--text-primary);
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.action-buttons .btn-large {
+    flex: 1;
+}
+
+.action-buttons .btn-secondary {
+    padding: 12px 20px;
+}
+
 /* Chat */
 .chat-hint {
     color: var(--text-secondary);
