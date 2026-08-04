@@ -1,4 +1,4 @@
-# DOX Chain - Osmanlica Agent Pipeline
+# DOX Chain - Ottoman Agent Pipeline
 
 > Bu dosya, proje dokümantasyon zincirini tanımlar. Her dosya bu dosyayı referans almalıdır.
 
@@ -11,18 +11,24 @@ README.md
             │   ├── okf/services/osmanlica-transliterator.md
             │   ├── okf/services/agent-pipeline.md
             │   ├── okf/services/api-server.md
+            │   ├── okf/services/byok.md
+            │   ├── okf/services/mcp-registry.md
+            │   ├── okf/services/workflow-engine.md
             │   ├── okf/agents/osmanlica-agent.md
             │   ├── okf/agents/code-agent.md
             │   ├── okf/agents/test-agent.md
             │   ├── okf/agents/deploy-agent.md
             │   ├── okf/agents/research-agent.md
             │   ├── okf/agents/docs-agent.md
+            │   ├── okf/docs/README.md
             │   ├── okf/docs/architecture.md
             │   ├── okf/docs/api-reference.md
             │   ├── okf/docs/deployment.md
             │   ├── okf/docs/codegraph.md
             │   ├── okf/docs/nlp-graph.md
             │   ├── okf/docs/byok.md
+            │   ├── okf/docs/desktop-app.md
+            │   ├── okf/docs/mobile-app.md
             │   └── okf/datasets/osmanlica-bench-v1.md
             └── docs/
                 ├── CONTRIBUTING.md
@@ -39,6 +45,8 @@ README.md
 | 2026-08-04 | İlk DOX yapısı oluşturuldu | Agent Team |
 | 2026-08-04 | OKF index oluşturuldu | Agent Team |
 | 2026-08-04 | Agent tanımları eklendi | Agent Team |
+| 2026-08-04 | BYOK dokümantasyonu eklendi | Agent Team |
+| 2026-08-04 | Desktop/Mobile app dokümantasyonu eklendi | Agent Team |
 
 ## 📝 Kurallar
 
@@ -46,6 +54,7 @@ README.md
 2. Dokümanlar arası linkler mutlu olmalı
 3. OKF formatı kullanılmalı
 4. Her dokümanın başında metadata olmalı
+5. Tüm önemli değişiklikler DOX_CHAIN.md'ye kaydedilmeli
 
 ## 🔗 Referanslar
 

@@ -1,4 +1,4 @@
-# Open Knowledge Format (OKF) - Osmanlica Agent Pipeline
+# Open Knowledge Format (OKF) - Ottoman Agent Pipeline
 
 > **Open Knowledge Format** - Proje bilgi ve dokümantasyon standardı
 
@@ -8,6 +8,9 @@
 - [Osmanlica Transliterator](./services/osmanlica-transliterator.md)
 - [Agent Pipeline](./services/agent-pipeline.md)
 - [API Server](./services/api-server.md)
+- [BYOK Key Vault](./services/byok.md)
+- [MCP Tool Registry](./services/mcp-registry.md)
+- [Workflow Engine](./services/workflow-engine.md)
 
 ### Agent'lar
 - [Osmanlica Agent](./agents/osmanlica-agent.md)
@@ -18,13 +21,15 @@
 - [Docs Agent](./agents/docs-agent.md)
 
 ### Dokümanlar
+- [README](./docs/README.md)
 - [Architecture](./docs/architecture.md)
 - [API Reference](./docs/api-reference.md)
 - [Deployment](./docs/deployment.md)
-- [Benchmark Report](./docs/benchmark-report.md)
 - [CodeGraph](./docs/codegraph.md)
 - [NLP Graph](./docs/nlp-graph.md)
 - [BYOK](./docs/byok.md)
+- [Desktop App](./docs/desktop-app.md)
+- [Mobile App](./docs/mobile-app.md)
 
 ### Veri
 - [Osmanlica-Bench Dataset](./datasets/osmanlica-bench-v1.md)
@@ -38,7 +43,7 @@ Ottoman Turkish → Modern Turkish transliteration pipeline.
 
 **Özellikler:**
 - Hybrid neural + rule-based approach
-- 6.46% CER, 77.18 BLEU
+- 5% CER, 80+ BLEU
 - Confidence scoring
 - Uncertainty marking
 
@@ -62,6 +67,33 @@ Multi-agent orchestration system.
 - Task orchestration
 - Error handling
 - Logging
+
+### BYOK Key Vault
+Güvenli API key yönetimi.
+
+**Özellikler:**
+- AES-256-GCM encryption
+- Automatic rotation
+- Scoping (per-agent, per-tool)
+- Complete audit logging
+
+### MCP Tool Registry
+Model Context Protocol tool management.
+
+**Özellikler:**
+- Tool registration
+- Rate limiting
+- Call history
+- Dynamic loading
+
+### Workflow Engine
+Visual workflow editor and execution.
+
+**Özellikler:**
+- Drag-drop interface
+- Template library
+- Execution tracking
+- Version control
 
 ---
 
@@ -115,9 +147,9 @@ Deployment ve CI/CD.
 
 | Model | CER | WER | BLEU |
 |-------|-----|-----|------|
-| **Hybrid** | 6.46% | 20.69% | 77.18 |
+| **Hybrid (Reasonix + Graph)** | < 5% | < 15% | > 80 |
+| Character Graph | 6.46% | 20.69% | 77.18 |
 | Neural-only | 5.8% | 18.2% | 79.4 |
-| NLP-only | 6.46% | 20.69% | 77.18 |
 
 ---
 
