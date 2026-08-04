@@ -58,95 +58,107 @@
         <main class="content">
             <!-- Transliterate Tab -->
             <div id="tab-transliterate" class="tab-content active">
-                <h2>Ottoman Turkish Transliterator</h2>
-                <div class="form-group">
-                    <label for="ottoman-input">Ottoman Turkish Text (Arap Harfi)</label>
-                    <textarea id="ottoman-input" rows="5" placeholder="عثمانلي توركجهسى..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Mode</label>
-                    <div class="radio-group">
-                        <label><input type="radio" name="mode" value="hybrid" checked> Hybrid (Recommended)</label>
-                        <label><input type="radio" name="mode" value="neural"> Neural</label>
-                        <label><input type="radio" name="mode" value="nlp"> NLP</label>
+                <div class="panel">
+                    <h2>Ottoman Turkish Transliterator</h2>
+                    <div class="form-group">
+                        <label for="ottoman-input">Ottoman Turkish Text (Arap Harfi)</label>
+                        <textarea id="ottoman-input" class="text-input" rows="5" placeholder="عثمانلي توركجهسى..."></textarea>
                     </div>
-                </div>
-                <button id="btn-transliterate" class="btn btn-primary">Transliterate</button>
-                <div class="result-box">
-                    <h3>Modern Turkish Result</h3>
-                    <div id="transliteration-output"></div>
-                    <div id="transliteration-metrics"></div>
+                    <div class="form-group">
+                        <label>Mode</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="mode" value="hybrid" checked> Hybrid (Recommended)</label>
+                            <label><input type="radio" name="mode" value="neural"> Neural</label>
+                            <label><input type="radio" name="mode" value="nlp"> NLP</label>
+                        </div>
+                    </div>
+                    <button id="btn-transliterate" class="btn btn-primary btn-large">Transliterate</button>
+                    <div class="result-box">
+                        <h3>Modern Turkish Result</h3>
+                        <div id="transliteration-output"></div>
+                        <div id="transliteration-metrics"></div>
+                    </div>
                 </div>
             </div>
 
             <!-- Chat Tab -->
             <div id="tab-chat" class="tab-content">
-                <h2>Agent Chat</h2>
-                <p class="chat-hint">Osmanlı Türkçesi transliterasyonu veya Türkçe→Osmanlıca çeviri için mesaj gönderin.</p>
-                <div id="chat-messages" class="chat-messages">
-                    <div class="chat-message assistant">
-                        Merhaba! Osmanlica Agent'e hoş geldiniz. Osmanlı Türkçesi transliterasyonu veya Türkçe→Osmanlıca çeviri için mesaj gönderebilirsiniz.
+                <div class="panel">
+                    <h2>Agent Chat</h2>
+                    <p class="chat-hint">Osmanlı Türkçesi transliterasyonu veya Türkçe→Osmanlıca çeviri için mesaj gönderin.</p>
+                    <div id="chat-messages" class="chat-messages">
+                        <div class="chat-message assistant">
+                            Merhaba! Osmanlica Agent'e hoş geldiniz. Osmanlı Türkçesi transliterasyonu veya Türkçe→Osmanlıca çeviri için mesaj gönderebilirsiniz.
+                        </div>
                     </div>
-                </div>
-                <div class="chat-input">
-                    <input type="text" id="chat-input" placeholder="Mesajınızı yazın...">
-                    <button id="btn-send" class="btn btn-primary">Gönder</button>
+                    <div class="chat-input">
+                        <input type="text" id="chat-input" class="text-input" placeholder="Mesajınızı yazın...">
+                        <button id="btn-send" class="btn btn-primary">Gönder</button>
+                    </div>
                 </div>
             </div>
 
             <!-- Workflows Tab -->
             <div id="tab-workflows" class="tab-content">
-                <h2>Workflows</h2>
-                <button id="btn-new-workflow" class="btn btn-primary">New Workflow</button>
-                <div id="workflows-list" class="list-container">
-                    <p>Loading...</p>
+                <div class="panel">
+                    <h2>Workflows</h2>
+                    <button id="btn-new-workflow" class="btn btn-primary">New Workflow</button>
+                    <div id="workflows-list" class="list-container">
+                        <p>Loading...</p>
+                    </div>
                 </div>
             </div>
 
             <!-- Keys Tab -->
             <div id="tab-keys" class="tab-content">
-                <h2>API Keys (BYOK)</h2>
-                <div class="form-group">
-                    <label for="key-service">Service</label>
-                    <select id="key-service">
-                        <option value="deepseek">DeepSeek</option>
-                        <option value="gateway">DB-Mentat Gateway</option>
-                        <option value="anthropic">Anthropic</option>
-                        <option value="openai">OpenAI</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="key-value">API Key</label>
-                    <input type="password" id="key-value" placeholder="sk-xxx">
-                </div>
-                <div class="form-group">
-                    <label for="key-scope">Scope</label>
-                    <select id="key-scope">
-                        <option value="global">Global</option>
-                        <option value="agent">Agent</option>
-                        <option value="tool">Tool</option>
-                        <option value="user">User</option>
-                    </select>
-                </div>
-                <button id="btn-create-key" class="btn btn-primary">Create Key</button>
-                <div id="keys-list" class="list-container">
-                    <p>Loading...</p>
+                <div class="panel">
+                    <h2>API Keys (BYOK)</h2>
+                    <div class="form-group">
+                        <label for="key-service">Service</label>
+                        <select id="key-service" class="text-input">
+                            <option value="deepseek">DeepSeek</option>
+                            <option value="gateway">DB-Mentat Gateway</option>
+                            <option value="anthropic">Anthropic</option>
+                            <option value="openai">OpenAI</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="key-value">API Key</label>
+                        <input type="password" id="key-value" class="text-input" placeholder="sk-xxx">
+                    </div>
+                    <div class="form-group">
+                        <label for="key-scope">Scope</label>
+                        <select id="key-scope" class="text-input">
+                            <option value="global">Global</option>
+                            <option value="agent">Agent</option>
+                            <option value="tool">Tool</option>
+                            <option value="user">User</option>
+                        </select>
+                    </div>
+                    <button id="btn-create-key" class="btn btn-primary">Create Key</button>
+                    <div id="keys-list" class="list-container">
+                        <p>Loading...</p>
+                    </div>
                 </div>
             </div>
 
             <!-- Tools Tab -->
             <div id="tab-tools" class="tab-content">
-                <h2>MCP Tools</h2>
-                <div id="tools-list" class="list-container">
-                    <p>Loading...</p>
+                <div class="panel">
+                    <h2>MCP Tools</h2>
+                    <div id="tools-list" class="list-container">
+                        <p>Loading...</p>
+                    </div>
                 </div>
             </div>
 
             <!-- History Tab -->
             <div id="tab-history" class="tab-content">
-                <h2>History</h2>
-                <div id="history-list" class="list-container">
-                    <p>Loading...</p>
+                <div class="panel">
+                    <h2>History</h2>
+                    <div id="history-list" class="list-container">
+                        <p>Loading...</p>
+                    </div>
                 </div>
             </div>
         </main>
@@ -158,11 +170,11 @@
             <h2>Settings</h2>
             <div class="form-group">
                 <label for="setting-backend-url">Backend URL</label>
-                <input type="text" id="setting-backend-url" value="http://localhost:8000">
+                <input type="text" id="setting-backend-url" class="text-input" value="http://localhost:8000">
             </div>
             <div class="form-group">
                 <label for="setting-default-model">Default Model</label>
-                <select id="setting-default-model">
+                <select id="setting-default-model" class="text-input">
                     <option value="deepseek-v4-flash">DeepSeek V4 Flash</option>
                     <option value="deepseek-v4-pro">DeepSeek V4 Pro</option>
                     <option value="qwen3-32b">Qwen3-32B</option>

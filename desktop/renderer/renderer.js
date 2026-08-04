@@ -74,23 +74,23 @@ const metricsBox = document.getElementById('transliteration-metrics');
 btnTransliterate.addEventListener('click', async () => {
     const text = ottomanInput.value.trim();
     if (!text) {
-        outputBox.textContent = 'Please enter Ottoman Turkish text';
+        outputBox.textContent = 'Lütfen Osmanlı Türkçesi metin girin';
         return;
     }
     const mode = document.querySelector('input[name="mode"]:checked').value;
-    outputBox.textContent = 'Transliterating...';
+    outputBox.textContent = 'Transliterasyon yapılıyor...';
     metricsBox.textContent = '';
     
     try {
         const result = await window.ottomanAgent.transliterate(text, { mode });
         if (result.error) {
-            outputBox.textContent = `Error: ${result.error}`;
+            outputBox.textContent = `Hata: ${result.error}`;
         } else {
             outputBox.textContent = result.modern_turkish || result.output || JSON.stringify(result, null, 2);
-            metricsBox.innerHTML = `Confidence: ${(result.confidence * 100).toFixed(1)}% | Method: ${result.method || mode} | Chunks: ${result.chunks || 1}`;
+            metricsBox.innerHTML = `Güven: %{(result.confidence * 100).toFixed(1)} | Yöntem: ${result.method || mode} | Chunk: ${result.chunks || 1}`;
         }
     } catch (error) {
-        outputBox.textContent = `Error: ${error.message}`;
+        outputBox.textContent = `Hata: ${error.message}`;
     }
 });
 
@@ -129,12 +129,12 @@ async function sendChat() {
     try {
         const result = await window.ottomanAgent.chat(message);
         if (result.error) {
-            addChatMessage('assistant', `Error: ${result.error}`);
+            addChatMessage('assistant', `Hata: ${result.error}`);
         } else {
-            addChatMessage('assistant', result.output || 'Response received');
+            addChatMessage('assistant', result.output || 'Yanıt alındı');
         }
     } catch (error) {
-        addChatMessage('assistant', `Error: ${error.message}`);
+        addChatMessage('assistant', `Hata: ${error.message}`);
     }
 }
 
@@ -146,17 +146,17 @@ chatInput.addEventListener('keypress', (e) => {
 // Keys management
 async function loadKeys() {
     const container = document.getElementById('keys-list');
-    container.innerHTML = 'Loading...';
+    container.innerHTML = 'Yükleniyor...';
     
     try {
         const result = await window.ottomanAgent.listKeys();
         if (result.error) {
-            container.innerHTML = `Error: ${result.error}`;
+            container.innerHTML = `Hata: ${result.error}`;
             return;
         }
         
         if (result.keys.length === 0) {
-            container.innerHTML = '<p>No API keys configured. Add one below.</p>';
+            container.innerHTML = '<p>API key bulunamadı. Aşağıdan ekleyin.</p>';
             return;
         }
         
@@ -168,8 +168,8 @@ async function loadKeys() {
                 <div class="key-info">
                     <strong>${key.service}</strong>
                     <span>ID: ${key.key_id}</span>
-                    <span class="key-status ${key.status}">Status: ${key.status}</span>
-                    <span>Created: ${new Date(key.created_at).toLocaleDateString()}</span>
+                    <span class="key-status ${key.status}">Durum: ${key.status}</span>
+                    <span>Oluşturuldu: ${new Date(key.created_at).toLocaleDateString()}</span>
                 </div>
                 <div class="key-actions">
                     <button onclick="rotateKey('${key.key_id}')">Rotate</button>
@@ -179,7 +179,7 @@ async function loadKeys() {
             container.appendChild(div);
         });
     } catch (error) {
-        container.innerHTML = `Error: ${error.message}`;
+        container.innerHTML = `Hata: ${error.message}`;
     }
 }
 
@@ -189,27 +189,27 @@ document.getElementById('btn-create-key').addEventListener('click', async () => 
     const scope = document.getElementById('key-scope').value;
     
     if (!service || !keyValue) {
-        alert('Please fill in all fields');
+        alert('Lütfen tüm alanları doldurun');
         return;
     }
     
     try {
         const result = await window.ottomanAgent.createKey({ service, api_key: keyValue, scope });
         if (result.key_id) {
-            alert(`Key created: ${result.key_id}`);
+            alert(`Key oluşturuldu: ${result.key_id}`);
             document.getElementById('key-service').value = '';
             document.getElementById('key-value').value = '';
             loadKeys();
         } else {
-            alert(`Error: ${result.detail || result.error}`);
+            alert(`Hata: ${result.detail || result.error}`);
         }
     } catch (error) {
-        alert(`Error: ${error.message}`);
+        alert(`Hata: ${error.message}`);
     }
 });
 
 async function rotateKey(keyId) {
-    const newKey = prompt('Enter new API key:');
+    const newKey = prompt('Yeni API key girin:');
     if (!newKey) return;
     
     try {
@@ -220,18 +220,18 @@ async function rotateKey(keyId) {
         });
         const result = await response.json();
         if (result.success) {
-            alert('Key rotated successfully');
+            alert('Key başarıyla rotate edildi');
             loadKeys();
         } else {
-            alert('Error rotating key');
+            alert('Rotate hatası');
         }
     } catch (error) {
-        alert(`Error: ${error.message}`);
+        alert(`Hata: ${error.message}`);
     }
 }
 
 async function revokeKey(keyId) {
-    if (!confirm('Are you sure you want to revoke this key?')) return;
+    if (!confirm('Bu key\'i iptal etmek istediğinizden emin misiniz?')) return;
     
     try {
         const response = await fetch(`http://localhost:8000/api/v1/byok/keys/${keyId}/revoke`, {
@@ -239,27 +239,27 @@ async function revokeKey(keyId) {
         });
         const result = await response.json();
         if (result.success) {
-            alert('Key revoked');
+            alert('Key iptal edildi');
             loadKeys();
         } else {
-            alert('Error revoking key');
+            alert('İptal hatası');
         }
     } catch (error) {
-        alert(`Error: ${error.message}`);
+        alert(`Hata: ${error.message}`);
     }
 }
 
 // Tools
 async function loadTools() {
     const container = document.getElementById('tools-list');
-    container.innerHTML = 'Loading...';
+    container.innerHTML = 'Yükleniyor...';
     
     try {
         const response = await fetch('http://localhost:8000/api/v1/mcp/tools');
         const tools = await response.json();
         
         if (!Array.isArray(tools)) {
-            container.innerHTML = '<p>No tools available</p>';
+            container.innerHTML = '<p>Tool bulunamadı</p>';
             return;
         }
         
@@ -277,33 +277,33 @@ async function loadTools() {
             container.appendChild(div);
         });
     } catch (error) {
-        container.innerHTML = `Error loading tools: ${error.message}`;
+        container.innerHTML = `Tool yüklenirken hata: ${error.message}`;
     }
 }
 
 async function executeTool(toolId) {
-    const params = prompt('Enter parameters (JSON):', '{}');
+    const params = prompt('Parametreleri girin (JSON):', '{}');
     if (!params) return;
     
     try {
         const result = await window.ottomanAgent.executeTool(toolId, JSON.parse(params));
         alert(JSON.stringify(result, null, 2));
     } catch (error) {
-        alert(`Error: ${error.message}`);
+        alert(`Hata: ${error.message}`);
     }
 }
 
 // Workflows
 async function loadWorkflows() {
     const container = document.getElementById('workflows-list');
-    container.innerHTML = 'Loading...';
+    container.innerHTML = 'Yükleniyor...';
     
     try {
         const response = await fetch('http://localhost:8000/api/v1/workflows/');
         const workflows = await response.json();
         
         if (!Array.isArray(workflows)) {
-            container.innerHTML = '<p>No workflows found</p>';
+            container.innerHTML = '<p>Workflow bulunamadı</p>';
             return;
         }
         
@@ -315,7 +315,7 @@ async function loadWorkflows() {
                 <div class="workflow-info">
                     <strong>${wf.name}</strong>
                     <span>v${wf.version}</span>
-                    <span>${wf.node_count} nodes</span>
+                    <span>${wf.node_count} düğüm</span>
                     <span class="workflow-status ${wf.status}">${wf.status}</span>
                 </div>
                 <button onclick="runWorkflow('${wf.workflow_id}')">Run</button>
@@ -323,24 +323,24 @@ async function loadWorkflows() {
             container.appendChild(div);
         });
     } catch (error) {
-        container.innerHTML = `Error loading workflows: ${error.message}`;
+        container.innerHTML = `Workflow yüklenirken hata: ${error.message}`;
     }
 }
 
 async function runWorkflow(workflowId) {
-    const input = prompt('Enter input (JSON):', '{}');
+    const input = prompt('Giriş verisini girin (JSON):', '{}');
     if (!input) return;
     
     try {
         const result = await window.ottomanAgent.executeWorkflow(workflowId, JSON.parse(input));
         alert(JSON.stringify(result, null, 2));
     } catch (error) {
-        alert(`Error: ${error.message}`);
+        alert(`Hata: ${error.message}`);
     }
 }
 
 document.getElementById('btn-new-workflow').addEventListener('click', async () => {
-    const name = prompt('Enter workflow name:');
+    const name = prompt('Workflow adı girin:');
     if (!name) return;
     
     try {
@@ -351,18 +351,18 @@ document.getElementById('btn-new-workflow').addEventListener('click', async () =
         });
         const result = await response.json();
         if (result.workflow_id) {
-            alert(`Workflow created: ${result.workflow_id}`);
+            alert(`Workflow oluşturuldu: ${result.workflow_id}`);
             loadWorkflows();
         }
     } catch (error) {
-        alert(`Error: ${error.message}`);
+        alert(`Hata: ${error.message}`);
     }
 });
 
 // History
 async function loadHistory() {
     const container = document.getElementById('history-list');
-    container.innerHTML = 'Loading...';
+    container.innerHTML = 'Yükleniyor...';
     
     try {
         const response = await fetch('http://localhost:8000/api/v1/mcp/tools/history?limit=50');
@@ -371,7 +371,7 @@ async function loadHistory() {
         container.innerHTML = '';
         
         if (!data.calls || data.calls.length === 0) {
-            container.innerHTML = '<p>No history yet</p>';
+            container.innerHTML = '<p>Henüz geçiş yok</p>';
             return;
         }
         
@@ -389,7 +389,7 @@ async function loadHistory() {
             container.appendChild(div);
         });
     } catch (error) {
-        container.innerHTML = `Error loading history: ${error.message}`;
+        container.innerHTML = `Geçmiş yüklenirken hata: ${error.message}`;
     }
 }
 
@@ -413,7 +413,7 @@ btnSaveSettings.addEventListener('click', () => {
     
     localStorage.setItem('ottoman-agent-settings', JSON.stringify({ backendUrl, defaultModel }));
     settingsModal.classList.add('hidden');
-    alert('Settings saved');
+    alert('Ayarlar kaydedildi');
 });
 
 // Load settings on startup
@@ -433,7 +433,7 @@ window.ottomanAgent.onMenuAction((action) => {
             if (paths && paths.length > 0) {
                 require('fs').readFile(paths[0], 'utf8', (err, data) => {
                     if (err) {
-                        alert('Error reading file');
+                        alert('Dosya okunurken hata');
                         return;
                     }
                     ottomanInput.value = data;
