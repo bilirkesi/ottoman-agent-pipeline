@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ottoman Agent</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts for Arabic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
@@ -78,7 +82,12 @@
                     <!-- Input Area -->
                     <div class="form-group">
                         <label for="input-text" id="input-label">Osmanlıca Metin (Arap Harfi)</label>
-                        <textarea id="input-text" class="text-input" rows="6" placeholder="عثمانلي توركجهسى..."></textarea>
+                        <textarea id="input-text" class="text-input arabic-text" rows="6" placeholder="عثمانلي توركجهسى..."></textarea>
+                    </div>
+                    
+                    <!-- Swap Button -->
+                    <div class="swap-container">
+                        <button id="btn-swap" class="btn btn-swap" title="Swap direction">⇅ Swap</button>
                     </div>
                     
                     <!-- Action Buttons -->

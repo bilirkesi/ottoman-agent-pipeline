@@ -78,6 +78,30 @@ function updateDirectionUI() {
     document.querySelector(`input[name="direction"][value="${currentDirection}"]`).closest('.direction-option').classList.add('active');
 }
 
+// Swap button
+const btnSwap = document.getElementById('btn-swap');
+if (btnSwap) {
+    btnSwap.addEventListener('click', () => {
+        const inputText = document.getElementById('input-text');
+        const outputText = document.getElementById('output-text');
+        const temp = inputText.value;
+        inputText.value = outputText.value;
+        outputText.value = temp;
+        
+        // Toggle direction
+        const radios = document.querySelectorAll('input[name="direction"]');
+        radios.forEach(radio => {
+            if (radio.value === 'ot-to-tr') {
+                radio.checked = radio.checked === false;
+            } else {
+                radio.checked = !radio.checked;
+            }
+        });
+        currentDirection = currentDirection === 'ot-to-tr' ? 'tr-to-ot' : 'ot-to-tr';
+        updateDirectionUI();
+    });
+}
+
 // Transliterate button
 document.getElementById('btn-transliterate').addEventListener('click', async () => {
     const text = document.getElementById('input-text').value.trim();

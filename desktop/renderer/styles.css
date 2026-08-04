@@ -30,13 +30,39 @@ html, body {
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    font-family: 'Segoe UI', 'Noto Sans Arabic', 'Aref Ruqaa', 'Traditional Arabic', -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu, sans-serif;
     background: var(--bg-primary);
     color: var(--text-primary);
     display: flex;
     flex-direction: column;
     height: 100vh;
     width: 100vw;
+    font-size: 16px;
+}
+
+/* Arabic text specific styles */
+.arabic-text {
+    font-family: 'Noto Sans Arabic', 'Aref Ruqaa', 'Traditional Arabic', 'Segoe UI', sans-serif;
+    font-size: 18px;
+    direction: rtl;
+    text-align: right;
+    line-height: 1.8;
+}
+
+textarea.arabic-text {
+    font-family: 'Noto Sans Arabic', 'Aref Ruqaa', 'Traditional Arabic', 'Segoe UI', sans-serif;
+    font-size: 18px;
+    direction: rtl;
+    text-align: right;
+    line-height: 1.8;
+}
+
+/* Ensure proper rendering of Arabic characters */
+#input-text, #output-text {
+    font-family: 'Noto Sans Arabic', 'Aref Ruqaa', 'Traditional Arabic', 'Segoe UI', sans-serif;
+    font-size: 18px;
+    direction: rtl;
+    text-align: right;
 }
 
 /* Header */
@@ -319,6 +345,28 @@ select.text-input {
 .direction-text {
     font-size: 14px;
     font-weight: 500;
+}
+
+/* Swap Button */
+.swap-container {
+    text-align: center;
+    margin: 16px 0;
+}
+
+.btn-swap {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    padding: 8px 24px;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-swap:hover {
+    background: var(--accent-secondary);
+    border-color: var(--accent-secondary);
 }
 
 /* Output */
