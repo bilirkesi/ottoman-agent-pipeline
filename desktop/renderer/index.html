@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src http://localhost:8000 ws://localhost:8000">
+  <title>Ottoman Agent</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <div class="logo">
+          <span class="logo-icon">🏺</span>
+          <span class="logo-text">Ottoman Agent</span>
+        </div>
+        <div class="status-indicator" id="backend-status">
+          <span class="status-dot"></span>
+          <span class="status-text">Backend: Stopped</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <button class="btn btn-secondary" id="btn-start-backend">Start Backend</button>
+        <button class="btn btn-secondary" id="btn-stop-backend" disabled>Stop Backend</button>
+        <button class="btn btn-primary" id="btn-settings">Settings</button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <nav class="nav-menu">
+          <button class="nav-item active" data-tab="transliterate">
+            <span class="nav-icon">📝</span>
+            <span>Transliterate</span>
+          </button>
+          <button class="nav-item" data-tab="chat">
+            <span class="nav-icon">💬</span>
+            <span>Agent Chat</span>
+          </button>
+          <button class="nav-item" data-tab="workflows">
+            <span class="nav-icon">⚡</span>
+            <span>Workflows</span>
+          </button>
+          <button class="nav-item" data-tab="keys">
+            <span class="nav-icon">🔑</span>
+            <span>API Keys</span>
+          </button>
+          <button class="nav-item" data-tab="tools">
+            <span class="nav-icon">🛠️</span>
+            <span>Tools</span>
+          </button>
+          <button class="nav-item" data-tab="history">
+            <span class="nav-icon">📊</span>
+            <span>History</span>
+          </button>
+        </nav>
+      </aside>
+
+      <!-- Content Area -->
+      <section class="content-area">
+        <!-- Transliterate Tab -->
+        <div class="tab-content active" id="tab-transliterate">
+          <div class="panel">
+            <h2>Ottoman Turkish Transliterator</h2>
+            <div class="input-group">
+              <label for="ottoman-input">Ottoman Turkish Text (Arap Harfi)</label>
+              <textarea id="ottoman-input" class="text-input" placeholder="عثمانلي توركجهسى..." rows="6"></textarea>
+            </div>
+            <div class="options-group">
+              <label>
+                <input type="radio" name="mode" value="hybrid" checked>
+                Hybrid (Recommended)
+              </label>
+              <label>
+                <input type="radio" name="mode" value="neural">
+                Neural
+              </label>
+              <label>
+                <input type="radio" name="mode" value="nlp">
+                NLP
+              </label>
+            </div>
+            <button class="btn btn-primary btn-large" id="btn-transliterate">Transliterate</button>
+            <div class="output-group">
+              <label>Modern Turkish Result</label>
+              <div id="transliteration-output" class="output-box"></div>
+            </div>
+            <div class="metrics" id="transliteration-metrics"></div>
+          </div>
+        </div>
+
+        <!-- Chat Tab -->
+        <div class="tab-content" id="tab-chat">
+          <div class="panel">
+            <h2>Agent Chat</h2>
+            <div id="chat-messages" class="chat-messages"></div>
+            <div class="chat-input-group">
+              <input type="text" id="chat-input" class="text-input" placeholder="Type your message...">
+              <button class="btn btn-primary" id="btn-send">Send</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Workflows Tab -->
+        <div class="tab-content" id="tab-workflows">
+          <div class="panel">
+            <h2>Workflows</h2>
+            <div id="workflows-list" class="list-container"></div>
+            <button class="btn btn-primary" id="btn-new-workflow">New Workflow</button>
+          </div>
+        </div>
+
+        <!-- Keys Tab -->
+        <div class="tab-content" id="tab-keys">
+          <div class="panel">
+            <h2>API Keys (BYOK)</h2>
+            <div class="key-form">
+              <input type="text" id="key-service" placeholder="Service (deepseek, gateway, etc.)" class="text-input">
+              <input type="password" id="key-value" placeholder="API Key" class="text-input">
+              <select id="key-scope" class="text-input">
+                <option value="global">Global</option>
+                <option value="agent">Agent</option>
+                <option value="tool">Tool</option>
+                <option value="user">User</option>
+              </select>
+              <button class="btn btn-primary" id="btn-create-key">Create Key</button>
+            </div>
+            <div id="keys-list" class="list-container"></div>
+          </div>
+        </div>
+
+        <!-- Tools Tab -->
+        <div class="tab-content" id="tab-tools">
+          <div class="panel">
+            <h2>MCP Tools</h2>
+            <div id="tools-list" class="list-container"></div>
+          </div>
+        </div>
+
+        <!-- History Tab -->
+        <div class="tab-content" id="tab-history">
+          <div class="panel">
+            <h2>History</h2>
+            <div id="history-list" class="list-container"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal hidden">
+      <div class="modal-content">
+        <h2>Settings</h2>
+        <div class="form-group">
+          <label>Backend URL</label>
+          <input type="text" id="setting-backend-url" class="text-input" value="http://localhost:8000">
+        </div>
+        <div class="form-group">
+          <label>Default Model</label>
+          <select id="setting-default-model" class="text-input">
+            <option value="deepseek-v4-flash">DeepSeek V4 Flash</option>
+            <option value="deepseek-v4-pro">DeepSeek V4 Pro</option>
+            <option value="gateway">DB-Mentat Gateway</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" id="btn-close-settings">Cancel</button>
+          <button class="btn btn-primary" id="btn-save-settings">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>
