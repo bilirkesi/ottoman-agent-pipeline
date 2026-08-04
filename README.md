@@ -1,21 +1,6 @@
----
-license: mit
-language:
-  - tr
-tags:
-  - ottoman-turkish
-  - turkish
-  - transliteration
-  - agent
-  - pipeline
-  - nlp
-  - desktop
-  - mobile
----
-
 # Ottoman Agent Pipeline
 
-Production-grade Ottoman Turkish transliteration agent pipeline with Desktop and Mobile support.
+**Ottoman Agent Pipeline** - Uçtan uca bağımsız çalışan AI ajan pipeline'ı.
 
 ## 🚀 Quick Start
 
@@ -23,13 +8,16 @@ Production-grade Ottoman Turkish transliteration agent pipeline with Desktop and
 # Install
 pip install -e .
 
-# Initialize config
+# Initialize
 ottoman-agent init
 
-# Run agent
+# Chat
 ottoman-agent chat "عثمانلي توركجهسى"
 
-# Or use API
+# Translate
+ottoman-agent translate "بسم الله"
+
+# Serve API
 ottoman-agent serve --port 8000
 ```
 
@@ -70,21 +58,13 @@ Create `~/.ottoman-agent/config.yaml`:
 agent:
   name: "osmanlica-agent"
   version: "0.1.0"
-  
+
 models:
   default: "deepseek-v4-flash"
   providers:
     deepseek:
       api_key: "${DEEPSEEK_API_KEY}"
       base_url: "https://api.deepseek.com/v1"
-      models:
-        - name: "deepseek-v4-flash"
-          context: 1000000
-          max_output: 384000
-        - name: "deepseek-v4-pro"
-          context: 128000
-          max_output: 8000
-    
     gateway:
       url: "${GATEWAY_URL:http://localhost:3002}"
       api_key: "${GATEWAY_API_KEY}"
@@ -92,24 +72,13 @@ models:
 tools:
   filesystem:
     enabled: true
-    root_dir: "${OTTOMAN_AGENT_ROOT:./data}"
-  
   web_search:
     enabled: true
-    max_results: 10
-  
   translation:
     enabled: true
     pipeline: "hybrid"
-  
   ner:
     enabled: true
-    model: "bert-base-turkish"
-
-sessions:
-  max_history: 50
-  auto_save: true
-  save_dir: "./data/sessions"
 ```
 
 ## 📱 Desktop App
@@ -140,11 +109,10 @@ pytest tests/ -v --cov=ottoman_agent_pipeline
 
 ## 📄 License
 
-MIT License - See LICENSE for details.
+MIT License
 
-## 🙏 Acknowledgments
+## 🔗 Related
 
-- [DeepSeek](https://www.deepseek.com) for V4 Flash
-- [TurkicNLP](https://github.com/turkic-nlp/turkicnlp) for toolkit
-- [DB-Mentat Gateway](https://github.com/bilirkesi/ai-dev-team) for integration
-- [Osmanlica](https://github.com/bilirkesi/turkish-nlp) for transliteration pipeline
+- **Main Repo:** https://github.com/bilirkesi/turkish-nlp
+- **Transliteration Package:** https://pypi.org/project/ottoman-transliterator/
+- **HuggingFace:** https://huggingface.co/bilirkesi
