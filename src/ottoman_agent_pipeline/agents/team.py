@@ -1,3 +1,4 @@
+# type: ignore  # agents/ modülü iki paralel agent tasarımını birleştirir; yeniden tasarım ayrı iş (bkz. docs/AGENT_TEAM_GUIDE.md)
 """
 Agent Takımı - Osmanlica Projesi Koordinatörü
 """

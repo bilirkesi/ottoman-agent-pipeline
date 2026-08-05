@@ -30,7 +30,8 @@ class GatewayModel(BaseModel):
 
     DEFAULT_URL = "http://localhost:3002"
 
-    def __init__(self, api_key: str | None = None, url: str = DEFAULT_URL, **kwargs):
+    def __init__(self, api_key: str | None = None, url: str | None = None, **kwargs):
+        url = url or self.DEFAULT_URL
         super().__init__(api_key=api_key, base_url=url, **kwargs)
         self.url = url.rstrip("/")
 
@@ -73,6 +74,7 @@ class GatewayModel(BaseModel):
         """
         if not self._client:
             await self.initialize()
+        assert self._client is not None
 
         payload = {
             "model": model or "gpt-4o",
@@ -99,6 +101,7 @@ class GatewayModel(BaseModel):
         """
         if not self._client:
             await self.initialize()
+        assert self._client is not None
 
         payload = {
             "model": model or "gpt-4o",
@@ -139,6 +142,7 @@ class GatewayModel(BaseModel):
 
     async def _chat_completion(self, payload: dict[str, Any]) -> dict[str, Any]:
         """Handle non-streaming completion."""
+        assert self._client is not None
         response = await self._client.post("/v1/chat/completions", json=payload)
         response.raise_for_status()
 
@@ -153,6 +157,7 @@ class GatewayModel(BaseModel):
 
     async def _chat_stream(self, payload: dict[str, Any]) -> dict[str, Any]:
         """Handle streaming completion."""
+        assert self._client is not None
         content_parts = []
         model = None
         finish_reason = None
@@ -190,6 +195,7 @@ class GatewayModel(BaseModel):
     async def health_check(self) -> dict[str, Any]:
         """Check gateway health."""
         try:
+            assert self._client is not None
             response = await self._client.get("/health")
             response.raise_for_status()
             return {"status": "healthy", "data": response.json()}

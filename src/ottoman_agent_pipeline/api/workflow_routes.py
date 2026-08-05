@@ -74,6 +74,7 @@ async def create_workflow(request: dict = Body(...)):
         )
 
         workflow = registry.get_workflow(workflow_id)
+        assert workflow is not None
 
         return WorkflowInfo(
             workflow_id=workflow.workflow_id,

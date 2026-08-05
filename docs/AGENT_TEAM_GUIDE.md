@@ -55,7 +55,7 @@ class CodeAgent:
     
     async def _lint_code(self, path: str) -> Dict:
         """Code linting"""
-        # Use ruff, pylint, or mypy
+        # Use ruff, basedpyright, or pylint
         import subprocess
         result = subprocess.run(
             ["ruff", "check", path],

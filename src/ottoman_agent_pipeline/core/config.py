@@ -27,6 +27,7 @@ class ModelConfig(BaseModel):
     name: str = ""
     api_key: str | None = None
     base_url: str | None = None
+    url: str | None = None
     models: list[dict[str, Any]] = Field(default_factory=list)
 
     def model_post_init(self, __context, /):
@@ -35,6 +36,8 @@ class ModelConfig(BaseModel):
             self.api_key = os.environ.get(f"{self.name.upper()}_API_KEY")
         if not self.base_url and self.name:
             self.base_url = os.environ.get(f"{self.name.upper()}_BASE_URL")
+        if not self.url and self.name:
+            self.url = os.environ.get(f"{self.name.upper()}_URL")
 
 
 class ModelsConfig(BaseModel):

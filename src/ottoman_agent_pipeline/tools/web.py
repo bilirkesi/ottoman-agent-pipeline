@@ -95,6 +95,7 @@ class WebSearchTool(BaseTool):
         search_url = f"https://html.duckduckgo.com/html/?q={encoded_query}"
 
         try:
+            assert self._client is not None
             response = await self._client.get(search_url)
             response.raise_for_status()
 
@@ -119,6 +120,7 @@ class WebSearchTool(BaseTool):
             raise ValueError("URL is required for fetch")
 
         try:
+            assert self._client is not None
             response = await self._client.get(url)
             response.raise_for_status()
 

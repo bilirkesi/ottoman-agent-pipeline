@@ -35,5 +35,5 @@ pytest-asyncio>=0.24.0
 pytest-cov>=5.0.0
 ruff>=0.6.0
 black>=24.0.0
-mypy>=1.10.0
+basedpyright>=1.15.0
 pre-commit>=3.8.0

@@ -80,3 +80,8 @@ mobile/ios/
 # Cache
 .caches/
 *.cache
+
+# Temp analysis files
+_bp*.txt
+_b*.txt
+_out*.txt

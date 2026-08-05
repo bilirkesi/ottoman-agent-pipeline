@@ -48,7 +48,7 @@ class ReasonixModel(DeepSeekModel):
     def __init__(
         self,
         api_key: str | None = None,
-        base_url: str = "https://api.deepseek.com/v1",
+        base_url: str | None = None,
         models: list[dict[str, Any]] | None = None,
         cache_enabled: bool = True,
         cacheable_prefix: str | None = None,
@@ -56,7 +56,7 @@ class ReasonixModel(DeepSeekModel):
     ):
         super().__init__(
             api_key=api_key,
-            base_url=base_url,
+            base_url=base_url or "https://api.deepseek.com/v1",
             models=models or self.DEFAULT_MODELS,
             **kwargs,
         )

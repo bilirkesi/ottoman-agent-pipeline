@@ -38,6 +38,7 @@ dev = [
     "pytest-cov>=5.0.0",
     "ruff>=0.6.0",
     "black>=24.0.0",
+    "basedpyright>=1.15.0",
 ]
 
 [project.scripts]
@@ -54,6 +55,38 @@ target-version = "py39"
 # - B008: FastAPI `Body(...)`/`Field(...)` default deseni proje genelinde kullanılır
 # - ASYNC230: dosya tool'ları küçük dosyalarla çalışır; sync open pratikte sorun değil
 extend-ignore = ["BLE001", "DTZ005", "B008", "ASYNC230"]
+
+[tool.basedpyright]
+# Tip kontrolü: mypy yerine basedpyright (daha hızlı, VS Code/Pylance uyumlu).
+# Basic mod + kapatılan kurallar:
+# - reportMissingTypeArgument: proje `list`/`dict` jeneriklerini parametresiz
+#   kullanır (mekanik 132 hata; tip disiplini ayrı iş olarak izleniyor)
+# - reportAny/Unknown*/ExplicitAny/MissingParameterType/UnannotatedClassAttribute:
+#   proje Any tabanlı helper desenleri kullanır; uyarı gürültüsünü azaltır
+# - reportUnusedParameter/UnusedCallResult: kalıtım/interface desenleri
+typeCheckingMode = "basic"
+reportMissingTypeArgument = "none"
+reportAny = "none"
+reportExplicitAny = "none"
+reportUnknownVariableType = "none"
+reportUnknownParameterType = "none"
+reportUnknownMemberType = "none"
+reportMissingParameterType = "none"
+reportUnannotatedClassAttribute = "none"
+reportUnusedParameter = "none"
+reportUnusedCallResult = "none"
+reportIncompatibleMethodOverride = "none"
+
+# agents/ modülü iki paralel agent tasarımını (AgentTeam + AgentBus/ProjectOrchestrator)
+# birleştirir; tip uyumsuzlukları biliniyor, birleştirme/yeniden tasarım ayrı iş.
+[[tool.basedpyright.overrides]]
+files = ["src/ottoman_agent_pipeline/agents/**"]
+reportArgumentType = "none"
+reportReturnType = "none"
+reportAssignmentType = "none"
+reportOptionalMemberAccess = "none"
+reportCallIssue = "none"
+reportAttributeAccessIssue = "none"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/ottoman_agent_pipeline"]

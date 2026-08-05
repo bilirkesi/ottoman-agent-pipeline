@@ -7,6 +7,7 @@ from .registry import (
     WorkflowEdge,
     WorkflowNode,
     WorkflowRegistry,
+    WorkflowTemplate,
     get_workflow_registry,
 )
 

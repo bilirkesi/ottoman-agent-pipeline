@@ -220,6 +220,7 @@ class TranslationTool(BaseTool):
         if not text:
             raise ValueError("Text is required")
 
+        assert self._transliterator is not None
         try:
             result = self._transliterator.transliterate(text, mode=mode)
             return self._result_to_dict(text, result)

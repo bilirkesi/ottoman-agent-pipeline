@@ -15,6 +15,7 @@ import asyncio
 import json
 import logging
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
@@ -125,7 +126,7 @@ class MCPToolRegistry:
         self.max_history = 10000
 
         # Event handlers
-        self._event_handlers: dict[str, list[callable]] = {}
+        self._event_handlers: dict[str, list[Callable]] = {}
 
         # Load existing tools
         self._load()
@@ -140,7 +141,7 @@ class MCPToolRegistry:
         logger.info(f"Registered tool: {config.name} ({config.tool_id})")
 
         # Emit event
-        self._emit("tool_registered", config)
+        self._emit("tool_registered", config.to_dict())
 
     def unregister_tool(self, tool_id: str) -> bool:
         """Tool kaldır"""
@@ -310,7 +311,7 @@ class MCPToolRegistry:
             else:
                 raise ValueError(f"Tool not implemented: {config.tool_id}")
 
-    def _get_handler(self, tool_id: str) -> callable | None:
+    def _get_handler(self, tool_id: str) -> Callable | None:
         """Handler bul"""
         # Built-in handlers
         handlers = {
@@ -333,7 +334,7 @@ class MCPToolRegistry:
             return {"content": content}
         elif action == "write":
             result = await tool.execute(
-                "write", path=params.get("path"), content=params.get("content", "")
+                "write", path=params.get("path", "."), content=params.get("content", "")
             )
             return {"result": result}
         elif action == "list":
@@ -405,7 +406,7 @@ class MCPToolRegistry:
         self.rate_limits[tool_id].append(now)
         return True
 
-    def on(self, event: str, handler: callable):
+    def on(self, event: str, handler: Callable):
         """Event handler ekle"""
         if event not in self._event_handlers:
             self._event_handlers[event] = []

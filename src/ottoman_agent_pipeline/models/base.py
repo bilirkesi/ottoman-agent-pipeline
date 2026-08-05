@@ -47,12 +47,11 @@ class BaseModel(ABC):
             Response dict with content, tool_calls, usage
         """
 
-    @abstractmethod
     async def chat_stream(
         self, messages: list[dict[str, str]], model: str | None = None, **kwargs
     ) -> AsyncGenerator[dict[str, Any], None]:
         """
-        Stream chat completion.
+        Stream chat completion (default: single yield of chat()).
 
         Args:
             messages: List of chat messages
@@ -62,6 +61,8 @@ class BaseModel(ABC):
         Yields:
             Response chunks
         """
+        response = await self.chat(messages, model=model, **kwargs)
+        yield response
 
     async def initialize(self) -> None:
         """Initialize model client."""

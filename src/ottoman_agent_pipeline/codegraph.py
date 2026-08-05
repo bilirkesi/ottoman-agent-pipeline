@@ -432,9 +432,10 @@ class CodeGraph:
         """
         orphans = []
         for node_id in self.nodes:
-            if not self.graph.has_predecessors(
+            has_deps = self.graph.has_predecessors(node_id) or self.graph.has_successors(  # type: ignore[reportAttributeAccessIssue]
                 node_id
-            ) and not self.graph.has_successors(node_id):
+            )
+            if not has_deps:
                 orphans.append(node_id)
         return orphans
 
@@ -518,13 +519,13 @@ class CodeGraph:
                 if not self._file_index[fp]:
                     del self._file_index[fp]
 
-    async def _load(self) -> None:
+    def _load(self) -> None:
         """Data'yı yükle"""
         db_file = self.db_path
         if db_file.exists():
             try:
-                async with aiofiles.open(db_file, "r", encoding="utf-8") as f:
-                    data = json.loads(await f.read())
+                with open(db_file, "r", encoding="utf-8") as f:
+                    data = json.load(f)
 
                 # Load nodes
                 for node_data in data.get("nodes", []):

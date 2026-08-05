@@ -376,6 +376,7 @@ class EntityGraph:
 
     def __init__(self):
         self.graph = nx.Graph()
+        self.word_cache: dict[str, Any] = {}
         self.entity_types = {
             "PERSON",
             "LOCATION",
@@ -628,6 +629,7 @@ class NLPGraph:
         self.word_graph = WordGraph()
         self.entity_graph = EntityGraph()
         self.doc_graph = DocumentGraph()
+        self.word_cache: dict[str, Any] = {}
 
         # Cross-graph relationships
         self.cross_graph = nx.Graph()

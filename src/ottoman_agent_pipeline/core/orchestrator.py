@@ -133,7 +133,8 @@ class AgentOrchestrator:
         if "gateway" in model_configs.providers:
             gateway_config = model_configs.providers["gateway"]
             self.models["gateway"] = GatewayModel(
-                url=gateway_config.url, api_key=gateway_config.api_key
+                url=gateway_config.url or gateway_config.base_url,
+                api_key=gateway_config.api_key,
             )
 
         # Reasonix models (optional)
@@ -204,7 +205,9 @@ class AgentOrchestrator:
         """Process a single message through the model."""
         try:
             # Call model
-            response = await model_provider.chat(messages, **self.config.agent.params)
+            response = await model_provider.chat(
+                messages, **self.config.agent.params.model_dump()
+            )
 
             # Extract content
             output = response.get("content", "")
@@ -323,11 +326,13 @@ class AgentOrchestrator:
             mode: Transliteration mode (hybrid/neural/nlp)
             model: Model to use
         """
-        return await self.chat(
+        result = await self.chat(
             message=f"Transliterate this Ottoman Turkish text to Modern Turkish: {text}",
             model=model,
             mode=mode,
         )
+        assert isinstance(result, AgentResponse)
+        return result
 
     async def analyze(
         self, text: str, entities: bool = True, pos: bool = True
@@ -347,7 +352,9 @@ class AgentOrchestrator:
             prompt += "\n- Add part-of-speech tags"
         prompt += f"\n\n{text}"
 
-        return await self.chat(message=prompt)
+        result = await self.chat(message=prompt)
+        assert isinstance(result, AgentResponse)
+        return result
 
     def get_session(self) -> AgentSession:
         """Get current session."""

@@ -29,7 +29,7 @@ cd desktop && npm start
 ### Python
 - Use **Black** for formatting
 - Use **Ruff** for linting
-- Use **mypy** for type checking
+- Use **basedpyright** for type checking
 - Follow **PEP 8** guidelines
 
 ```bash
@@ -40,7 +40,7 @@ black src/ tests/
 ruff check src/ tests/
 
 # Type check
-mypy src/
+basedpyright src/
 ```
 
 ### JavaScript/TypeScript

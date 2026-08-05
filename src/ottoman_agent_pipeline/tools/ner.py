@@ -43,7 +43,7 @@ class NERTool(BaseTool):
         """Initialize NER model."""
         try:
             # Import here to avoid circular imports
-            from turkicnlp import NLPToolkit
+            from turkicnlp import NLPToolkit  # type: ignore[reportMissingImports]
 
             self._ner_model = NLPToolkit(language="ottoman", model=self.model)
 
@@ -98,7 +98,10 @@ class NERTool(BaseTool):
 
         try:
             # Use NER model
-            entities = self._ner_model.extract_entities(text, entity_types=entity_types)
+            assert self._ner_model is not None
+            entities: list[Any] = self._ner_model.extract_entities(
+                text, entity_types=entity_types
+            )
 
             return [
                 {

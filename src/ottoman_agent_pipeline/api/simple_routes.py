@@ -99,7 +99,7 @@ async def chat(request: ChatRequest):
         result = ChatResponse(
             success=True,
             output=response_text,
-            model_used=request.model,
+            model_used=request.model or "deepseek-v4-flash",
             tokens_used=len(message.split()),
         )
 

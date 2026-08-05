@@ -178,6 +178,7 @@ class WorkflowRegistry:
         self.storage_path = Path(storage_path)
         self.storage_path.mkdir(parents=True, exist_ok=True)
         self.workflows: dict[str, Workflow] = {}
+        self.execution_history: dict[str, list[dict[str, Any]]] = {}
         self._load()
 
     async def create_workflow(
@@ -256,6 +257,71 @@ class WorkflowRegistry:
                 json.dump(data, f, indent=2, ensure_ascii=False)
         except Exception as e:
             logger.error(f"Error saving workflows: {e}")
+
+    async def execute_workflow(
+        self, workflow_id: str, input_data: dict[str, Any]
+    ) -> dict[str, Any]:
+        """Workflow çalıştır (basit sıralı node yürütme)."""
+        workflow = self.workflows.get(workflow_id)
+        if workflow is None:
+            raise KeyError(f"Workflow not found: {workflow_id}")
+
+        started_at = datetime.now().isoformat()
+        nodes_executed: list[dict[str, Any]] = []
+        for node in workflow.nodes:
+            entry: dict[str, Any] = {
+                "node_id": node.node_id,
+                "name": node.name,
+                "status": "executed",
+            }
+            if node.type == "tool" and node.config.get("tool") == "translation":
+                text = input_data.get("text", "")
+                entry["output"] = {"input_text": text}
+            nodes_executed.append(entry)
+
+        record = {
+            "workflow_id": workflow_id,
+            "status": "completed",
+            "started_at": started_at,
+            "completed_at": datetime.now().isoformat(),
+            "nodes_executed": nodes_executed,
+        }
+        self.execution_history.setdefault(workflow_id, []).append(record)
+        self._save()
+        return record
+
+    def get_execution_history(
+        self, workflow_id: str, limit: int = 100
+    ) -> list[dict[str, Any]]:
+        """Workflow execution geçmişi."""
+        return self.execution_history.get(workflow_id, [])[-limit:]
+
+    async def clone_workflow(self, workflow_id: str, new_name: str) -> str | None:
+        """Workflow klonla."""
+        workflow = self.workflows.get(workflow_id)
+        if workflow is None:
+            return None
+        new_id = f"wf_{uuid.uuid4().hex[:8]}"
+        clone = Workflow(
+            workflow_id=new_id,
+            name=new_name,
+            description=workflow.description,
+            nodes=[WorkflowNode.from_dict(n.to_dict()) for n in workflow.nodes],
+            edges=[WorkflowEdge.from_dict(e.to_dict()) for e in workflow.edges],
+            created_by=workflow.created_by,
+        )
+        self.workflows[new_id] = clone
+        self._save()
+        return new_id
+
+    async def delete_workflow(self, workflow_id: str) -> bool:
+        """Workflow sil."""
+        if workflow_id not in self.workflows:
+            return False
+        del self.workflows[workflow_id]
+        self.execution_history.pop(workflow_id, None)
+        self._save()
+        return True
 
 
 # Module-level singleton

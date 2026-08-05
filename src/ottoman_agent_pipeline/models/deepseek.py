@@ -48,11 +48,15 @@ class DeepSeekModel(BaseModel):
     def __init__(
         self,
         api_key: str | None = None,
-        base_url: str = "https://api.deepseek.com/v1",
+        base_url: str | None = None,
         models: list[dict[str, Any]] | None = None,
         **kwargs,
     ):
-        super().__init__(api_key=api_key, base_url=base_url, **kwargs)
+        super().__init__(
+            api_key=api_key,
+            base_url=base_url or "https://api.deepseek.com/v1",
+            **kwargs,
+        )
         self.models = models or self.DEFAULT_MODELS
         self._default_model = "deepseek-v4-flash"
 
@@ -90,8 +94,8 @@ class DeepSeekModel(BaseModel):
         active_model = model or self._default_model
 
         try:
-            response = await self._client.chat.completions.create(
-                model=active_model, messages=messages, stream=stream, **kwargs
+            response = await self._client.chat.completions.create(  # type: ignore[reportCallIssue]
+                model=active_model, messages=messages, stream=stream, **kwargs  # type: ignore[reportArgumentType]
             )
 
             if stream:
@@ -120,8 +124,8 @@ class DeepSeekModel(BaseModel):
         active_model = model or self._default_model
 
         try:
-            response = await self._client.chat.completions.create(
-                model=active_model, messages=messages, stream=True, **kwargs
+            response = await self._client.chat.completions.create(  # type: ignore[reportCallIssue]
+                model=active_model, messages=messages, stream=True, **kwargs  # type: ignore[reportArgumentType]
             )
 
             async for chunk in response:

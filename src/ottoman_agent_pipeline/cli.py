@@ -12,7 +12,7 @@ import typer
 from loguru import logger
 
 from .core.config import get_config
-from .core.orchestrator import AgentOrchestrator
+from .core.orchestrator import AgentOrchestrator, AgentResponse
 
 app = typer.Typer(help="Ottoman Agent Pipeline CLI")
 orchestrator: AgentOrchestrator | None = None
@@ -43,6 +43,7 @@ def chat(
         pass
 
     result = asyncio.run(orch.chat(message, model=model, stream=stream))
+    assert isinstance(result, AgentResponse)
 
     if json_output:
         print(result.to_json())
