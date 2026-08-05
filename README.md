@@ -5,8 +5,11 @@
 ## 🚀 Quick Start
 
 ```bash
-# Install package
-pip install ottoman-agent-pipeline
+# Kurulum (paket henüz PyPI'da yayınlanmadı — kaynaktan kurun)
+git clone https://github.com/bilirkesi/ottoman-agent-pipeline.git
+cd ottoman-agent-pipeline
+python -m venv .venv && .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -e ".[dev]"
 
 # Initialize
 ottoman-agent init

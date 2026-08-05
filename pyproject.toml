@@ -58,14 +58,13 @@ extend-ignore = ["BLE001", "DTZ005", "B008", "ASYNC230"]
 
 [tool.basedpyright]
 # Tip kontrolü: mypy yerine basedpyright (daha hızlı, VS Code/Pylance uyumlu).
-# Basic mod + kapatılan kurallar:
-# - reportMissingTypeArgument: proje `list`/`dict` jeneriklerini parametresiz
-#   kullanır (mekanik 132 hata; tip disiplini ayrı iş olarak izleniyor)
+# Basic mod. reportMissingTypeArgument varsayılan (error) olarak açıktır;
+# kod tabanı parametreli `list[...]`/`dict[...]` kullanımına taşındı (0 hata).
+# Kapatılan kurallar (uyarı gürültüsü):
 # - reportAny/Unknown*/ExplicitAny/MissingParameterType/UnannotatedClassAttribute:
-#   proje Any tabanlı helper desenleri kullanır; uyarı gürültüsünü azaltır
+#   proje Any tabanlı helper desenleri kullanır
 # - reportUnusedParameter/UnusedCallResult: kalıtım/interface desenleri
 typeCheckingMode = "basic"
-reportMissingTypeArgument = "none"
 reportAny = "none"
 reportExplicitAny = "none"
 reportUnknownVariableType = "none"
