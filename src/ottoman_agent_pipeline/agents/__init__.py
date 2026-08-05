@@ -1,4 +1,3 @@
-# type: ignore  # agents/ modülü iki paralel agent tasarımını birleştirir; yeniden tasarım ayrı iş (bkz. docs/AGENT_TEAM_GUIDE.md)
 """
 Agent Takımı - Osmanlica Projesi için otomatik agent koordinasyonu
 """
@@ -11,6 +10,8 @@ import logging
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
+
+from .team import AgentBus, AgentMessage
 
 logger = logging.getLogger(__name__)
 
@@ -50,15 +51,22 @@ class AgentTeam:
     def _initialize_agents(self):
         """Agent'ları başlat"""
         # Import agents
-        from .team import CodeAgent, DeployAgent, DocsAgent, ResearchAgent, TestAgent
+        from .team import (
+            CodeAgent,
+            DeployAgent,
+            DocsAgent,
+            ResearchAgent,
+            TestAgent,
+        )
 
-        # Create agents
+        # Create agents (shared bus wiring)
+        self.bus = AgentBus()
         self.agents = {
-            "code_agent": CodeAgent(self),
-            "test_agent": TestAgent(self),
-            "deploy_agent": DeployAgent(self),
-            "research_agent": ResearchAgent(self),
-            "docs_agent": DocsAgent(self),
+            "code_agent": CodeAgent(self.bus),
+            "test_agent": TestAgent(self.bus),
+            "deploy_agent": DeployAgent(self.bus),
+            "research_agent": ResearchAgent(self.bus),
+            "docs_agent": DocsAgent(self.bus),
         }
 
         logger.info(f"Initialized {len(self.agents)} agents")
@@ -81,12 +89,12 @@ class AgentTeam:
                 result = await getattr(agent, method_name)(task.payload)
             else:
                 result = await agent.handle(
-                    {
-                        "payload": task.payload,
-                        "sender": "team",
-                        "receiver": task.agent,
-                        "type": "request",
-                    }
+                    AgentMessage(
+                        sender="team",
+                        receiver=task.agent,
+                        msg_type="request",
+                        payload=task.payload,
+                    )
                 )
 
             task.result = result
@@ -154,7 +162,9 @@ class AgentTeam:
             "tasks_failed": len([t for t in self.tasks if t.status == "failed"]),
         }
 
-    async def implement(self, name: str, path: str, template: str = "default") -> dict:
+    async def implement(
+        self, name: str, path: str, template: str = "default"
+    ) -> AgentTask:
         """Kod implement et"""
         task = AgentTask(
             name=f"Implement {name}",
@@ -168,7 +178,7 @@ class AgentTeam:
         )
         return await self.run_task(task)
 
-    async def test(self, path: str, test_path: str) -> dict:
+    async def test(self, path: str, test_path: str) -> AgentTask:
         """Test çalıştır"""
         task = AgentTask(
             name="Run tests",
@@ -177,7 +187,7 @@ class AgentTeam:
         )
         return await self.run_task(task)
 
-    async def deploy(self, version: str) -> dict:
+    async def deploy(self, version: str) -> AgentTask:
         """Deploy et"""
         task = AgentTask(
             name="Deploy",
@@ -186,7 +196,7 @@ class AgentTeam:
         )
         return await self.run_task(task)
 
-    async def research(self, topic: str) -> dict:
+    async def research(self, topic: str) -> AgentTask:
         """Araştırma yap"""
         task = AgentTask(
             name=f"Research: {topic}",
@@ -195,7 +205,7 @@ class AgentTeam:
         )
         return await self.run_task(task)
 
-    async def document(self, project: str) -> dict:
+    async def document(self, project: str) -> AgentTask:
         """Dokümantasyon oluştur"""
         task = AgentTask(
             name=f"Document: {project}",

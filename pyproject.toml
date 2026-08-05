@@ -77,16 +77,5 @@ reportUnusedParameter = "none"
 reportUnusedCallResult = "none"
 reportIncompatibleMethodOverride = "none"
 
-# agents/ modülü iki paralel agent tasarımını (AgentTeam + AgentBus/ProjectOrchestrator)
-# birleştirir; tip uyumsuzlukları biliniyor, birleştirme/yeniden tasarım ayrı iş.
-[[tool.basedpyright.overrides]]
-files = ["src/ottoman_agent_pipeline/agents/**"]
-reportArgumentType = "none"
-reportReturnType = "none"
-reportAssignmentType = "none"
-reportOptionalMemberAccess = "none"
-reportCallIssue = "none"
-reportAttributeAccessIssue = "none"
-
 [tool.hatch.build.targets.wheel]
 packages = ["src/ottoman_agent_pipeline"]

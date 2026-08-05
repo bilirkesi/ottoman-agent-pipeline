@@ -85,3 +85,5 @@ mobile/ios/
 _bp*.txt
 _b*.txt
 _out*.txt
+
+_r*.txt
