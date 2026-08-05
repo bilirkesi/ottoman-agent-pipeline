@@ -11,11 +11,13 @@ birebir eşleşecek şekilde modellenmiştir:
 - config.sessions.max_history     -> oturum geçmişi sınırı
 """
 
-import os
-import yaml
-from pathlib import Path
-from typing import Any, Dict, List, Optional
+from __future__ import annotations
 
+import os
+from pathlib import Path
+from typing import Any
+
+import yaml
 from pydantic import BaseModel, Field
 
 
@@ -23,11 +25,11 @@ class ModelConfig(BaseModel):
     """Model provider configuration."""
 
     name: str = ""
-    api_key: Optional[str] = None
-    base_url: Optional[str] = None
-    models: List[Dict[str, Any]] = Field(default_factory=list)
+    api_key: str | None = None
+    base_url: str | None = None
+    models: list[dict[str, Any]] = Field(default_factory=list)
 
-    def model_post_init(self, __context):
+    def model_post_init(self, __context, /):
         """Post-init hook to load env vars (ör. DEEPSEEK_API_KEY)."""
         if not self.api_key and self.name:
             self.api_key = os.environ.get(f"{self.name.upper()}_API_KEY")
@@ -39,7 +41,7 @@ class ModelsConfig(BaseModel):
     """Model sağlayıcı haritası."""
 
     default: str = "deepseek-v4-flash"
-    providers: Dict[str, ModelConfig] = Field(default_factory=dict)
+    providers: dict[str, ModelConfig] = Field(default_factory=dict)
 
 
 class FileSystemToolConfig(BaseModel):
@@ -83,7 +85,7 @@ class AgentSection(BaseModel):
 
     name: str = "osmanlica-agent"
     version: str = "0.1.0"
-    team: Dict[str, Any] = Field(default_factory=dict)
+    team: dict[str, Any] = Field(default_factory=dict)
     params: AgentParams = Field(default_factory=AgentParams)
 
 
@@ -114,9 +116,9 @@ class ConfigManager:
 
     DEFAULT_CONFIG_PATH = Path("~/.ottoman-agent/config.yaml").expanduser()
 
-    def __init__(self, config_path: Optional[Path] = None):
+    def __init__(self, config_path: Path | None = None):
         self.config_path = config_path or self.DEFAULT_CONFIG_PATH
-        self._config: Optional[AgentConfig] = None
+        self._config: AgentConfig | None = None
 
     def load(self) -> AgentConfig:
         """Load configuration from file."""
@@ -138,7 +140,9 @@ class ConfigManager:
         self.config_path.parent.mkdir(parents=True, exist_ok=True)
 
         with open(self.config_path, "w", encoding="utf-8") as f:
-            yaml.dump(config.model_dump(), f, default_flow_style=False, allow_unicode=True)
+            yaml.dump(
+                config.model_dump(), f, default_flow_style=False, allow_unicode=True
+            )
 
         self._config = config
 
@@ -163,7 +167,7 @@ def get_config() -> AgentConfig:
     return _config_manager.get()
 
 
-def load_config(path: Optional[Path] = None) -> AgentConfig:
+def load_config(path: Path | None = None) -> AgentConfig:
     """Load configuration from path."""
     manager = ConfigManager(path)
     return manager.load()

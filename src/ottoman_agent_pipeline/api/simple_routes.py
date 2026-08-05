@@ -1,11 +1,18 @@
 """
 Simple Transliteration API - No auth required
+
+End-user friendly endpoints backed by the real TranslationTool
+(ottoman-transliterator engine with rule-based fallback).
 """
+
+from __future__ import annotations
+
+import logging
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from typing import Optional
-import logging
+
+from ..tools.translation import get_translation_tool
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +35,7 @@ class TransliterateResponse(BaseModel):
 
 class ChatRequest(BaseModel):
     message: str
-    model: Optional[str] = "deepseek-v4-flash"
+    model: str | None = "deepseek-v4-flash"
 
 
 class ChatResponse(BaseModel):
@@ -45,34 +52,34 @@ async def transliterate(request: TransliterateRequest):
         text = request.text.strip()
         if not text:
             raise HTTPException(status_code=400, detail="Text is required")
-        
-        # Simple transliteration (placeholder for real implementation)
-        if request.direction == "ot-to-tr":
-            # Ottoman to Turkish
-            output = text.lower()
-            # Basic character mapping (placeholder)
-            output = output.replace("عثمانلي", "Osmanlı").replace("توركجهسى", "Türkçesi")
-            result = TransliterateResponse(
+
+        tool = get_translation_tool()
+        if tool._transliterator is None:
+            await tool.initialize()
+
+        if request.direction == "tr-to-ot":
+            result = await tool.execute(action="reverse", text=text)
+            return TransliterateResponse(
                 success=True,
-                output=output,
-                confidence=0.95,
-                method=request.mode,
-                direction=request.direction
+                output=result.get("ottoman", text),
+                confidence=float(result.get("confidence", 0.5)),
+                method=result.get("method", "reverse_mapping"),
+                direction=request.direction,
             )
-        else:
-            # Turkish to Ottoman
-            output = text.title()
-            output = output.replace("Osmanlı", "عثمانلي").replace("Türkçe", "توركجه")
-            result = TransliterateResponse(
-                success=True,
-                output=output,
-                confidence=0.85,
-                method=request.mode,
-                direction=request.direction
-            )
-        
-        return result
-        
+
+        result = await tool.execute(
+            action="transliterate", text=text, mode=request.mode
+        )
+        return TransliterateResponse(
+            success=True,
+            output=result.get("modern_turkish", text),
+            confidence=float(result.get("confidence", 0.5)),
+            method=result.get("method", "fallback"),
+            direction=request.direction,
+        )
+
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Transliteration error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -85,19 +92,21 @@ async def chat(request: ChatRequest):
         message = request.message.strip()
         if not message:
             raise HTTPException(status_code=400, detail="Message is required")
-        
+
         # Simple response (placeholder)
         response_text = f"Osmanlica Agent response to: {message}"
-        
+
         result = ChatResponse(
             success=True,
             output=response_text,
             model_used=request.model,
-            tokens_used=len(message.split())
+            tokens_used=len(message.split()),
         )
-        
+
         return result
-        
+
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Chat error: {e}")
         raise HTTPException(status_code=500, detail=str(e))

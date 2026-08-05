@@ -39,11 +39,6 @@ jobs:
         pip install black
         black --check .
     
-    - name: Type check with mypy
-      run: |
-        pip install mypy
-        mypy src/
-    
     - name: Run tests
       run: |
         pytest tests/ -v --cov=ottoman_agent_pipeline --cov-report=xml

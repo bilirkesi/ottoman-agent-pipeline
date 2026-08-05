@@ -2,17 +2,17 @@
 Visual Workflow Editor - Ottoman Agent Pipeline için workflow yönetimi
 """
 
-import asyncio
+from __future__ import annotations
+
 import json
 import logging
 import uuid
+from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
-from dataclasses import dataclass, field
+from typing import Any, ClassVar
 
 import networkx as nx
-from loguru import logger
 
 logger = logging.getLogger(__name__)
 
@@ -20,16 +20,17 @@ logger = logging.getLogger(__name__)
 @dataclass
 class WorkflowNode:
     """Workflow düğümü"""
+
     node_id: str
     type: str
     name: str
-    config: Dict[str, Any] = field(default_factory=dict)
-    position: Tuple[int, int] = (0, 0)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    config: dict[str, Any] = field(default_factory=dict)
+    position: tuple[int, int] = (0, 0)
+    metadata: dict[str, Any] = field(default_factory=dict)
     created_at: datetime = field(default_factory=datetime.now)
     updated_at: datetime = field(default_factory=datetime.now)
-    
-    def to_dict(self) -> Dict:
+
+    def to_dict(self) -> dict:
         return {
             "node_id": self.node_id,
             "type": self.type,
@@ -38,11 +39,11 @@ class WorkflowNode:
             "position": list(self.position),
             "metadata": self.metadata,
             "created_at": self.created_at.isoformat(),
-            "updated_at": self.updated_at.isoformat()
+            "updated_at": self.updated_at.isoformat(),
         }
-    
+
     @classmethod
-    def from_dict(cls, data: Dict) -> 'WorkflowNode':
+    def from_dict(cls, data: dict) -> WorkflowNode:
         return cls(
             node_id=data["node_id"],
             type=data["type"],
@@ -50,57 +51,67 @@ class WorkflowNode:
             config=data.get("config", {}),
             position=tuple(data.get("position", [0, 0])),
             metadata=data.get("metadata", {}),
-            created_at=datetime.fromisoformat(data["created_at"]) if data.get("created_at") else datetime.now(),
-            updated_at=datetime.fromisoformat(data["updated_at"]) if data.get("updated_at") else datetime.now()
+            created_at=(
+                datetime.fromisoformat(data["created_at"])
+                if data.get("created_at")
+                else datetime.now()
+            ),
+            updated_at=(
+                datetime.fromisoformat(data["updated_at"])
+                if data.get("updated_at")
+                else datetime.now()
+            ),
         )
 
 
 @dataclass
 class WorkflowEdge:
     """Workflow kenarı"""
+
     edge_id: str
     source_node_id: str
     target_node_id: str
-    condition: Optional[str] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
-    
-    def to_dict(self) -> Dict:
+    condition: str | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> dict:
         return {
             "edge_id": self.edge_id,
             "source_node_id": self.source_node_id,
             "target_node_id": self.target_node_id,
             "condition": self.condition,
-            "metadata": self.metadata
+            "metadata": self.metadata,
         }
-    
+
     @classmethod
-    def from_dict(cls, data: Dict) -> 'WorkflowEdge':
+    def from_dict(cls, data: dict) -> WorkflowEdge:
         return cls(
             edge_id=data["edge_id"],
             source_node_id=data["source_node_id"],
             target_node_id=data["target_node_id"],
             condition=data.get("condition"),
-            metadata=data.get("metadata", {})
+            metadata=data.get("metadata", {}),
         )
 
 
 @dataclass
 class Workflow:
     """Workflow tanımı"""
+
     workflow_id: str
     name: str
     description: str = ""
-    nodes: List[WorkflowNode] = field(default_factory=list)
-    edges: List[WorkflowEdge] = field(default_factory=list)
-    variables: Dict[str, Any] = field(default_factory=dict)
+    nodes: list[WorkflowNode] = field(default_factory=list)
+    edges: list[WorkflowEdge] = field(default_factory=list)
+    variables: dict[str, Any] = field(default_factory=dict)
     status: str = "draft"
     version: int = 1
     created_at: datetime = field(default_factory=datetime.now)
     updated_at: datetime = field(default_factory=datetime.now)
-    created_by: Optional[str] = None
-    tags: List[str] = field(default_factory=list)
-    
-    def to_dict(self) -> Dict:
+    created_by: str | None = None
+    tags: list[str] = field(default_factory=list)
+
+    def to_dict(self) -> dict:
         return {
             "workflow_id": self.workflow_id,
             "name": self.name,
@@ -113,11 +124,11 @@ class Workflow:
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat(),
             "created_by": self.created_by,
-            "tags": self.tags
+            "tags": self.tags,
         }
-    
+
     @classmethod
-    def from_dict(cls, data: Dict) -> 'Workflow':
+    def from_dict(cls, data: dict) -> Workflow:
         return cls(
             workflow_id=data["workflow_id"],
             name=data["name"],
@@ -127,22 +138,30 @@ class Workflow:
             variables=data.get("variables", {}),
             status=data.get("status", "draft"),
             version=data.get("version", 1),
-            created_at=datetime.fromisoformat(data["created_at"]) if data.get("created_at") else datetime.now(),
-            updated_at=datetime.fromisoformat(data["updated_at"]) if data.get("updated_at") else datetime.now(),
+            created_at=(
+                datetime.fromisoformat(data["created_at"])
+                if data.get("created_at")
+                else datetime.now()
+            ),
+            updated_at=(
+                datetime.fromisoformat(data["updated_at"])
+                if data.get("updated_at")
+                else datetime.now()
+            ),
             created_by=data.get("created_by"),
-            tags=data.get("tags", [])
+            tags=data.get("tags", []),
         )
-    
+
     def add_node(self, node: WorkflowNode):
         self.nodes.append(node)
         self.updated_at = datetime.now()
-    
-    def get_node(self, node_id: str) -> Optional[WorkflowNode]:
+
+    def get_node(self, node_id: str) -> WorkflowNode | None:
         for node in self.nodes:
             if node.node_id == node_id:
                 return node
         return None
-    
+
     def get_graph(self) -> nx.DiGraph:
         graph = nx.DiGraph()
         for node in self.nodes:
@@ -154,39 +173,47 @@ class Workflow:
 
 class WorkflowRegistry:
     """Workflow Registry"""
-    
+
     def __init__(self, storage_path: str = "./data/workflows"):
         self.storage_path = Path(storage_path)
         self.storage_path.mkdir(parents=True, exist_ok=True)
-        self.workflows: Dict[str, Workflow] = {}
+        self.workflows: dict[str, Workflow] = {}
         self._load()
-    
-    async def create_workflow(self, name: str, description: str = "",
-                               template_id: Optional[str] = None,
-                               created_by: Optional[str] = None) -> str:
+
+    async def create_workflow(
+        self,
+        name: str,
+        description: str = "",
+        template_id: str | None = None,
+        created_by: str | None = None,
+    ) -> str:
         workflow_id = f"wf_{uuid.uuid4().hex[:8]}"
         workflow = Workflow(
             workflow_id=workflow_id,
             name=name,
             description=description,
-            created_by=created_by
+            created_by=created_by,
         )
 
         # Apply template nodes/edges if requested
         if template_id:
             template = WorkflowTemplate.get_template(template_id)
             if template:
-                workflow.nodes = [WorkflowNode(**node.to_dict()) for node in template.nodes]
-                workflow.edges = [WorkflowEdge(**edge.to_dict()) for edge in template.edges]
+                workflow.nodes = [
+                    WorkflowNode(**node.to_dict()) for node in template.nodes
+                ]
+                workflow.edges = [
+                    WorkflowEdge(**edge.to_dict()) for edge in template.edges
+                ]
 
         self.workflows[workflow_id] = workflow
         self._save()
         return workflow_id
-    
-    def get_workflow(self, workflow_id: str) -> Optional[Workflow]:
+
+    def get_workflow(self, workflow_id: str) -> Workflow | None:
         return self.workflows.get(workflow_id)
-    
-    def list_workflows(self, status: Optional[str] = None) -> List[Dict]:
+
+    def list_workflows(self, status: str | None = None) -> list[dict]:
         return [
             {
                 "workflow_id": wf_id,
@@ -197,12 +224,12 @@ class WorkflowRegistry:
                 "node_count": len(wf.nodes),
                 "edge_count": len(wf.edges),
                 "created_at": wf.created_at.isoformat(),
-                "updated_at": wf.updated_at.isoformat()
+                "updated_at": wf.updated_at.isoformat(),
             }
             for wf_id, wf in self.workflows.items()
             if status is None or wf.status == status
         ]
-    
+
     def _load(self):
         storage_file = self.storage_path / "workflows.json"
         if storage_file.exists():
@@ -222,8 +249,8 @@ class WorkflowRegistry:
                 "workflows": [wf.to_dict() for wf in self.workflows.values()],
                 "metadata": {
                     "count": len(self.workflows),
-                    "updated_at": datetime.now().isoformat()
-                }
+                    "updated_at": datetime.now().isoformat(),
+                },
             }
             with open(storage_file, "w", encoding="utf-8") as f:
                 json.dump(data, f, indent=2, ensure_ascii=False)
@@ -233,6 +260,7 @@ class WorkflowRegistry:
 
 # Module-level singleton
 _registry = None
+
 
 def get_workflow_registry() -> WorkflowRegistry:
     """Global registry instance"""
@@ -244,36 +272,47 @@ def get_workflow_registry() -> WorkflowRegistry:
 
 class WorkflowTemplate:
     """Workflow şablonları"""
-    
-    TEMPLATES = {
+
+    TEMPLATES: ClassVar[dict[str, Any]] = {
         "transliteration_pipeline": {
             "name": "Transliteration Pipeline",
             "description": "Ottoman Turkish to Modern Turkish",
             "nodes": [
                 WorkflowNode(node_id="start", type="start", name="Start"),
-                WorkflowNode(node_id="transliterate", type="tool", name="Transliterate", config={"tool": "translation"}),
-                WorkflowNode(node_id="output", type="end", name="Output")
+                WorkflowNode(
+                    node_id="transliterate",
+                    type="tool",
+                    name="Transliterate",
+                    config={"tool": "translation"},
+                ),
+                WorkflowNode(node_id="output", type="end", name="Output"),
             ],
             "edges": [
-                WorkflowEdge(edge_id="e1", source_node_id="start", target_node_id="transliterate"),
-                WorkflowEdge(edge_id="e2", source_node_id="transliterate", target_node_id="output")
-            ]
+                WorkflowEdge(
+                    edge_id="e1", source_node_id="start", target_node_id="transliterate"
+                ),
+                WorkflowEdge(
+                    edge_id="e2",
+                    source_node_id="transliterate",
+                    target_node_id="output",
+                ),
+            ],
         }
     }
-    
+
     @classmethod
-    def get_templates(cls) -> List[Dict]:
+    def get_templates(cls) -> list[dict]:
         return [
             {
                 "id": template_id,
                 "name": template["name"],
-                "description": template["description"]
+                "description": template["description"],
             }
             for template_id, template in cls.TEMPLATES.items()
         ]
-    
+
     @classmethod
-    def get_template(cls, template_id: str) -> Optional[Workflow]:
+    def get_template(cls, template_id: str) -> Workflow | None:
         template = cls.TEMPLATES.get(template_id)
         if not template:
             return None
@@ -282,5 +321,5 @@ class WorkflowTemplate:
             name=template["name"],
             description=template["description"],
             nodes=template["nodes"],
-            edges=template["edges"]
+            edges=template["edges"],
         )

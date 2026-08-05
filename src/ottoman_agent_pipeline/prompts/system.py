@@ -2,26 +2,24 @@
 System Prompts - Prompt templates for agent
 """
 
-from typing import Dict, List, Any
-
 
 class SystemPromptBuilder:
     """
     Builder for system prompts.
-    
+
     Generates contextual prompts based on available tools and models.
     """
-    
+
     @staticmethod
     def build(
-        tools: List[str],
-        models: List[str],
+        tools: list[str],
+        models: list[str],
         task: str = "transliteration",
-        custom_instructions: str = ""
+        custom_instructions: str = "",
     ) -> str:
         """
         Build system prompt.
-        
+
         Args:
             tools: Available tool names
             models: Available model names
@@ -47,12 +45,12 @@ class SystemPromptBuilder:
             "- Use DeepSeek V4 Flash as primary model",
             "- Fall back to other models if needed",
         ]
-        
+
         if custom_instructions:
             prompt_parts.extend(["\n## Custom Instructions", custom_instructions])
-        
+
         return "\n".join(prompt_parts)
-    
+
     @staticmethod
     def transliteration_prompt() -> str:
         """Build transliteration-specific prompt."""
@@ -82,7 +80,7 @@ Output: Osmanlı Türkçesi (confidence: 0.95)
 Input: بسم الله الرحمن الرحيم
 Output: Bismillahirrahmanirrahim (confidence: 0.98)
 """.strip()
-    
+
     @staticmethod
     def analysis_prompt() -> str:
         """Build analysis-specific prompt."""

@@ -1,4 +1,5 @@
 import pytest
+
 from ottoman_agent_pipeline import __version__
 from ottoman_agent_pipeline.core.orchestrator import AgentOrchestrator
 from ottoman_agent_pipeline.core.session import AgentSession
@@ -30,7 +31,7 @@ async def test_session():
     assert len(session.messages) == 2
     assert session.get_history() == [
         {"role": "user", "content": "Hello"},
-        {"role": "assistant", "content": "Hi there!"}
+        {"role": "assistant", "content": "Hi there!"},
     ]
 
 

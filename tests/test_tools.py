@@ -1,7 +1,9 @@
-import pytest
-from ottoman_agent_pipeline.tools.filesystem import FileSystemTool
-from pathlib import Path
 import tempfile
+from pathlib import Path
+
+import pytest
+
+from ottoman_agent_pipeline.tools.filesystem import FileSystemTool
 
 
 @pytest.mark.asyncio
@@ -11,7 +13,9 @@ async def test_filesystem_tool():
         tool = FileSystemTool(root_dir=Path(tmpdir))
 
         # Test write
-        result = await tool.execute("write", path="test_output.txt", content="New content")
+        result = await tool.execute(
+            "write", path="test_output.txt", content="New content"
+        )
         assert "Written" in result
 
         # Test read

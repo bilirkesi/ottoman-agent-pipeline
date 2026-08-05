@@ -4,6 +4,7 @@
 
 const { app, BrowserWindow, ipcMain, dialog, Menu } = require('electron');
 const path = require('path');
+const fs = require('fs');
 const { spawn } = require('child_process');
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -12,6 +13,7 @@ let pythonProcess = null;
 
 // Create the main window
 function createWindow() {
+  const iconPath = path.join(__dirname, 'resources', 'icon.png');
   mainWindow = new BrowserWindow({
     width: 1400,
     height: 900,
@@ -22,7 +24,7 @@ function createWindow() {
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js')
     },
-    icon: path.join(__dirname, '../resources/icon.png'),
+    icon: fs.existsSync(iconPath) ? iconPath : undefined,
     title: 'Ottoman Agent',
     backgroundColor: '#1a1a2e',
     frame: true,

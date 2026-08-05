@@ -6,8 +6,10 @@ bir model sağlayıcısıdır. Aynı system prompt / konuşma öneki tekrar
 gönderildiğinde cache hit sağlayarak maliyeti düşürür.
 """
 
+from __future__ import annotations
+
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, ClassVar
 
 from .deepseek import DeepSeekModel
 
@@ -28,7 +30,7 @@ class ReasonixModel(DeepSeekModel):
     name = "reasonix"
     description = "DeepSeek Reasonix model provider with prefix-cache optimization"
 
-    DEFAULT_MODELS = [
+    DEFAULT_MODELS: ClassVar[list[dict[str, Any]]] = [
         {
             "name": "reasonix-v4-flash",
             "context": 1000000,
@@ -45,11 +47,11 @@ class ReasonixModel(DeepSeekModel):
 
     def __init__(
         self,
-        api_key: Optional[str] = None,
+        api_key: str | None = None,
         base_url: str = "https://api.deepseek.com/v1",
-        models: Optional[List[Dict[str, Any]]] = None,
+        models: list[dict[str, Any]] | None = None,
         cache_enabled: bool = True,
-        cacheable_prefix: Optional[str] = None,
+        cacheable_prefix: str | None = None,
         **kwargs,
     ):
         super().__init__(
@@ -64,10 +66,10 @@ class ReasonixModel(DeepSeekModel):
 
     async def chat(
         self,
-        messages: List[Dict[str, str]],
-        model: Optional[str] = None,
+        messages: list[dict[str, str]],
+        model: str | None = None,
         **kwargs,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Chat completion - prefix-cache bilinciyle.
 
@@ -82,7 +84,7 @@ class ReasonixModel(DeepSeekModel):
 
         return await super().chat(messages, model=model, **kwargs)
 
-    def get_info(self) -> Dict[str, Any]:
+    def get_info(self) -> dict[str, Any]:
         """Model bilgisi."""
         return {
             "name": self.name,

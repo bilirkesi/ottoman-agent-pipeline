@@ -44,5 +44,16 @@ dev = [
 ottoman-agent = "ottoman_agent_pipeline.cli:main"
 ottoman = "ottoman_agent_pipeline.cli:main"
 
+[tool.ruff]
+target-version = "py39"
+
+[tool.ruff.lint]
+# Bilinçli olarak devre dışı bırakılan kurallar (kod tabanı desenleri):
+# - BLE001: route/araç katmanı kullanıcı dostu hata döndürmek için geniş `except` kullanır
+# - DTZ005: proje naive yerel zaman kullanır (timezone politikası tanımlı değil)
+# - B008: FastAPI `Body(...)`/`Field(...)` default deseni proje genelinde kullanılır
+# - ASYNC230: dosya tool'ları küçük dosyalarla çalışır; sync open pratikte sorun değil
+extend-ignore = ["BLE001", "DTZ005", "B008", "ASYNC230"]
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/ottoman_agent_pipeline"]
